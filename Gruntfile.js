@@ -38,11 +38,21 @@ module.exports = function(grunt) {
               'foler.php': ['build/php', 'layout/layout.html']
               }
           }
+      },
+      watch: {
+        scripts: {
+          files: ['**/*'],
+          tasks: ['default'],
+          options: {
+            spawn: false,
+          }
+        }
       }
   });
 
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task.
   grunt.registerTask('default', ['concat:php', 'concat:js', 'concat:layout']);
