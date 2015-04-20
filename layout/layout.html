@@ -12,32 +12,49 @@
         </style>
     </head>
     <body onLoad="projects.reload()">
-        <!-- Here goes content from all js/*.js files -->
-        { js }
-        <!-- /end -->
+        
         <table>
             <tr>
                 <td colspan="2">
                     Foler
                 </td>
                 <td>
-                    <div id="status">
+                    <div id="status_field">
                         Status
                     </div>
+                    <form id="project_form">
+                        Name <input type="text" name="name">
+                        <br />
+                        Languages <input type="text" name="languages" placeholder="en,ru,de">
+                        <br />
+                        Path for export <input type="text" name="path">
+                        <br />
+                        <button type="button" onclick="projects.save()"><?php echo $i18n['template']['button_save']; ?></button>
+                    </form>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <div id="projects"></div>
+                    <div id="projects_block"></div>
                 </td>
                 <td>
-                    table 2
+                    <input type="text" placeholder="<?php echo $i18n['template']['code_placeholder']; ?>">
+                    <div id="codes_block"></div>
+                    <form id="code_form">
+                        
+                    </form>
                 </td>
                 <td>
-                    table 3
+                    <form id="translation_form">
+
+                    </form>
                 </td>
             </tr>
         </table>
+        
+        <!-- Here goes content from all js/*.js files -->
+        { js }
+        <!-- /end -->
         
     </body>
 </html>
