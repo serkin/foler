@@ -12,3 +12,4 @@ $app['config'] = array(
         'password'  => 'CFGHNBV'
     )
 );
+$app['locale'] = 'en';

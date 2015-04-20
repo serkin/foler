@@ -9,6 +9,8 @@ try {
     Response::responseWithError($exc->getMessage());
 }
 
+$i18n = $app['i18n'][$app['locale']];
+
 
 if(!empty($_REQUEST['action']) && isset($app['controllers'][$_REQUEST['action']])):
     $app['controllers'][$_REQUEST['action']]($app, $_REQUEST);
