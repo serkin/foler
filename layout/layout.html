@@ -9,6 +9,9 @@
                 margin: 0;
                 padding: 0;
             }
+            table {
+                border: #cecece 1px solid;
+            }
         </style>
     </head>
     <body onLoad="projects.reload()">
@@ -29,7 +32,7 @@
                         <br />
                         Path for export <input type="text" name="path">
                         <br />
-                        <button type="button" onclick="projects.save()"><?php echo $i18n['template']['button_save']; ?></button>
+                        <button type="button" onclick="projects.ProjectForm.save()"><?php echo $i18n['template']['button_save']; ?></button>
                     </form>
                 </td>
             </tr>
