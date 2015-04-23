@@ -6,8 +6,8 @@ var projects = {
 
             var out = '';
 
-            for (var i in response.response) {
-                out += response.response[i].name + "<br />";
+            for (var i in response.response.data) {
+                out += response.response.data[i].name + "<br />";
             }
 
             var el = document.querySelectorAll('#projects_block');
@@ -22,7 +22,14 @@ var projects = {
     
     
     ProjectForm: {
-        save: function(){},
+        save: function(){
+            var form = document.getElementById('project_form');
+            var data = serialize(form);
+
+            sendRequest('project/save', data, function(response){
+                projects.reload();
+            });
+        },
         clear: function() {},
         fillWithProjectData: function(idProject) {}
     }
