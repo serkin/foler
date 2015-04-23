@@ -13,3 +13,5 @@ $app['config'] = array(
     )
 );
 $app['locale'] = 'en';
+
+include 'ChromePhp.php';
