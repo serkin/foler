@@ -172,6 +172,19 @@ class Foler {
     }
     
     /**
+     * Removes project
+     * 
+     * @param int $idProject
+     * @return boolean
+     */
+    public function deleteProject($idProject){
+        
+        $sql = "DELETE FROM `project` WHERE `id_project` = " . $idProject;
+        return $this->dbh->exec($sql) ? true : false;
+    }
+
+
+    /**
      * 
      * @param integer $idProject
      * @param string $code
