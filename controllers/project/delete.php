@@ -2,7 +2,7 @@
 
 
 
-$app['controllers']['project/save'] = function ($app, $request){
+$app['controllers']['project/delete'] = function ($app, $request){
     
     
     // Checks if id_oriject exists
@@ -14,15 +14,15 @@ $app['controllers']['project/save'] = function ($app, $request){
     $data = (array)json_decode($request['form']);
     
     ChromePhp::log($data);
-    $idProject = !empty($data['id_project']) ? $data['id_project'] : null;
+    $idProject = !empty($data['id_project']) ? (int)$data['id_project'] : null;
 
     
     
-    $result = $app['foler']->savePropject($data, $idProject);
+    $result = $app['foler']->deleteProject($idProject);
     
     
     if($result):
-        Response::responseWithSuccess(['response' => $data, 'message' => 'Project saved']);
+        Response::responseWithSuccess(['response' => [], 'message' => 'Project deleted']);
     else:
         Response::responseWithError($app['foler']->getError()[2]);
     endif;
