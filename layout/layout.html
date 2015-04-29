@@ -18,47 +18,62 @@
             }
         </style>
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     </head>
     <body onLoad="projects.reload()">
         
-        <table>
-            <tr>
-                <td colspan="2">
-                    Foler
-                </td>
-                <td>
-                    <div id="status_field">
+        <div class="row">
+            <div class="col-md-8">
+                Foler
+            </div>
+            <div class="col-md-3">
+                <div id="status_field">
                         Status
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <div id="projects_block"></div>
+                
+                <form id="project_form" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Name</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" name="name">
+                        </div>
                     </div>
-                    <form id="project_form">
-                        Name <input type="text" name="name">
-                        <br />
-                        Languages <input type="text" name="languages" placeholder="en,ru,de">
-                        <br />
-                        Path for export <input type="text" name="path">
-                        <br />
-                        <button type="button" onclick="projects.ProjectForm.save()"><?php echo $i18n['template']['button_save']; ?></button>
-                    </form>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div id="projects_block"></div>
-                </td>
-                <td>
-                    <input type="text" placeholder="<?php echo $i18n['template']['code_placeholder']; ?>">
-                    <div id="codes_block"></div>
-                    <form id="code_form">
-                        
-                    </form>
-                </td>
-                <td>
-                    <form id="translation_form">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Languages</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" name="languages" placeholder="en,ru,de">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Path</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" name="path">
+                        </div>
+                    </div>
+                    <button type="button" onclick="projects.ProjectForm.save()" class="btn btn-default"><?php echo $i18n['template']['button_save']; ?></button>
+                </form>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <input type="text" placeholder="<?php echo $i18n['template']['code_placeholder']; ?>">
+                <div id="codes_block"></div>
+                <form id="code_form">
 
-                    </form>
-                </td>
-            </tr>
-        </table>
+                </form>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <form id="translation_form">
+
+                </form>
+            </div>
+        </div>
         
         <!-- Here goes content from all js/*.js files -->
         { js }
