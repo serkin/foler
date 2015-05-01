@@ -10,18 +10,19 @@ var projects = {
     reload: function() {
         sendRequest('project/getall',{}, function(response){
 
-            var out = '';
+            var out = '<table class="table table-condensed"><thead><th>#</th><th>Name</th><th>Manage</th></thead><tbody>';
 
             for (var i in response.response.data) {
                 var id = response.response.data[i].id_project;
-                out += "<div class='project_block' id='project_block_"
+                out += "<tr class='project_block' id='project_block_"
                         + id
-                        + "' OnClick='projects.selectProjectById(" + id + ")'>"
+                        + "' OnClick='projects.selectProjectById(" + id + ")'><td>" + id + "</td><td>"
                         + response.response.data[i].name
-                        + "<span OnClick='projects.deleteProject("
+                        + "</td><td><button class='btn btn-danger btn-xs' OnClick='projects.deleteProject("
                         + id
-                        + ")'>delete</span></div>";
+                        + ")'>delete</button></td></tr>";
             }
+            out += '</tbody></table>';
 
             var el = document.querySelectorAll('#projects_block');
                 el[0].innerHTML = out;
@@ -31,8 +32,8 @@ var projects = {
     },
 
     selectProjectById: function(idProject) {
-        $('.project_block').removeClass('selected_project');
-        $('#project_block_' + idProject).addClass('selected_project');
+        $('.project_block').removeClass('success');
+        $('#project_block_' + idProject).addClass('success');
         idSelectedProject = idProject;
     },
     export: function(idProject, type) {},
