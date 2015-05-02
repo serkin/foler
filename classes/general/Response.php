@@ -18,12 +18,15 @@ class Response {
         
     }
 
-    public static function responseWithSuccess($arr){
+    public static function responseWithSuccess($arr, $statusMessage = ''){
 
         header('Content-Type: application/json');
 
-        $response = ['status' => 'ok'];
-        $response['response'] = $arr;
+        $response = [
+            'status'            => 'ok',
+            'status_message'    => $statusMessage,
+            'response'          => $arr
+                ];
 
         echo json_encode($response);
         die();
