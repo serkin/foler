@@ -13,7 +13,7 @@ $app['controllers']['project/delete'] = function ($app, $request){
     // Edit project
     $data = (array)json_decode($request['form']);
     
-    ChromePhp::log($data);
+
     $idProject = !empty($data['id_project']) ? (int)$data['id_project'] : null;
 
     
