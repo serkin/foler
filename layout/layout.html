@@ -18,6 +18,7 @@
             }
         </style>
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     </head>
     <body onLoad="projects.reload()">
@@ -36,6 +37,25 @@
             <div class="col-md-1"></div>
             <div class="col-md-3">
                 <div id="projects_block"></div>
+
+                <script id="projectsTemplate" type="x-tmpl-mustache">
+                    <table class="table table-condensed">
+                        <thead>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Manage</th>
+                        </thead>
+                        <tbody>
+                            {{#projects}}
+                                <tr OnClick="projects.selectProjectById({{id_project}})" class="project_block" id="project_block_{{id_project}}">
+                                    <td>{{id_project}}</td>
+                                    <td>{{name}}</td>
+                                    <td><button class="btn btn-danger btn-xs" OnClick="projects.deleteProject({{id_project}})">delete</button></td>
+                                </tr>
+                            {{/projects}}
+                        </tbody>
+                    </table>
+                </script>
                 
                 <h3>Add/edit project</h3>
                 <hr>
