@@ -1,16 +1,25 @@
 
 
 var translation = {
-    form: document.getElementById("codes_block"),
-    save: function() {
+    save: function(idCode) {
+
+        var data = $('#translationForm').serialize();
+        console.log(data);
+
+        sendRequest('translation/save', {form:data}, function(response){
+            translation.render(idCode);
+        });
 
     },
 
-    getTranslation: function(idCode) {
+    render: function(idCode) {
+        sendRequest('translation/getone', {id_code: idCode}, function(response){
 
-    },
+            var template = $('#translationFormTemplate').html();
+            var rendered = Mustache.render(template, response);
 
-    renderWithData: function(arr) {
+            $('#translationFormBlock').html(rendered);
+        });
 
     },
 
