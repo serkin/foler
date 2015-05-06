@@ -2,27 +2,21 @@
 
 
 
-$app['controllers']['project/save'] = function ($app, $request){
+$app['controllers']['code/save'] = function ($app, $request){
     
-    
-    // Checks if id_oriject exists
-    
-    
-    // Save project
-    
-    // Edit project
+
+
     $data = (array)json_decode($request['form']);
     
-    ChromePhp::log($data);
-    $idProject = !empty($data['id_project']) ? $data['id_project'] : null;
-
+    $idProject  = !empty($data['id_project']) ? $data['id_project'] : null;
+    $code       = !empty($data['code']) ? $data['code'] : null;
     
     
-    $result = $app['foler']->savePropject($data, $idProject);
+    $result = $app['foler']->saveCode($code, $idProject);
     
     
     if($result):
-        Response::responseWithSuccess(['response' => $data, 'message' => 'Project saved']);
+        Response::responseWithSuccess(['response' => ['id_code' => $result], 'message' => 'Code added']);
     else:
         Response::responseWithError($app['foler']->getError()[2]);
     endif;

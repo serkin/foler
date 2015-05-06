@@ -2,9 +2,15 @@
 
 
 
-$app['controllers']['project/getall'] = function ($app, $request){
+$app['controllers']['translation/getone'] = function ($app, $request){
     
-    $projects = $app['foler']->getAllProjects();
-    Response::responseWithSuccess(['projects' => $projects]);
-    
+    $idCode = !empty($request['id_code']) ? (int)$request['id_code'] : null;
+
+    if(!is_null($idCode)):
+        $result = $app['foler']->getTranslation($idCode);
+        Response::responseWithSuccess($result);
+    else:
+        Response::responseWithError('Code id not correct');
+    endif;
+
 };

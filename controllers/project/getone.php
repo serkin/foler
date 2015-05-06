@@ -2,9 +2,15 @@
 
 
 
-$app['controllers']['project/getall'] = function ($app, $request){
+$app['controllers']['project/getone'] = function ($app, $request){
     
-    $projects = $app['foler']->getAllProjects();
-    Response::responseWithSuccess(['projects' => $projects]);
-    
+    $idProject = !empty($request['id_project']) ? (int)$request['id_project'] : null;
+
+    if(!is_null($idProject)):
+        $project = $app['foler']->getProjectByID($idProject);
+        Response::responseWithSuccess(['project' => $project]);
+    else:
+        Response::responseWithError('Project id not correct');
+    endif;
+
 };
