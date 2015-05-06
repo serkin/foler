@@ -17,9 +17,12 @@
                 background-color: #cecece;
             }
         </style>
-        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <!--<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
+        <script src="jquery-1.10.2.js"></script>
+        <script src="mustache.min.js"></script>
+        <link rel="stylesheet" href="bootstrap.min.css">
     </head>
     <body onLoad="projects.reload()">
         
@@ -36,7 +39,7 @@
         <div class="row">
             <div class="col-md-1"></div>
             <div class="col-md-3">
-                <div id="projects_block"></div>
+                <div id="projectsBlock"></div>
 
                 <script id="projectsTemplate" type="x-tmpl-mustache">
                     <table class="table table-condensed">
@@ -59,41 +62,87 @@
                 
                 <h3>Add/edit project</h3>
                 <hr>
-                <form id="project_form" class="form-horizontal">
+                <div id="projectFormBlock"></div>
+                <script id="projectFormTemplate" type="x-tmpl-mustache">
+                    <form id="projectForm" class="form-horizontal">
+                        {{#id_project}}
+                            <input type="hidden" name="id_project" value="{{id_project}}">
+                        {{/id_project}}
+            
                     <div class="form-group">
                         <label class="col-sm-6 control-label">Name</label>
                         <div class="col-sm-6">
-                            <input class="form-control input-sm" type="text" name="name">
+                            <input class="form-control input-sm" type="text" name="name" value="{{name}}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-6 control-label">Languages</label>
                         <div class="col-sm-6">
-                            <input class="form-control" type="text" name="languages" placeholder="en,ru,de">
+                            <input class="form-control" type="text" name="languages" value="{{languages}}" placeholder="en,ru,de">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-6 control-label">Path</label>
                         <div class="col-sm-6">
-                            <input class="form-control" type="text" name="path">
+                            <input class="form-control" type="text" name="path" value="{{path}}">
                         </div>
                     </div>
                     <button type="button" onclick="projects.ProjectForm.save()" class="btn btn-default"><?php echo $i18n['template']['button_save']; ?></button>
                 </form>
+                </script>
+                
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-3">
-                <input type="text" placeholder="<?php echo $i18n['template']['code_placeholder']; ?>">
-                <div id="codes_block"></div>
-                <form id="code_form">
-
-                </form>
+                <input type="text" class="form-control" onkeyup="codes.SearchField.find($(this).val())" placeholder="<?php echo $i18n['template']['code_placeholder']; ?>">
+                <div id="codesBlock"></div>
+                <script id="codesTemplate" type="x-tmpl-mustache">
+                    <table class="table table-condensed">
+                        <thead>
+                            <th>Code</th>
+                            <th>Manage</th>
+                        </thead>
+                        <tbody>
+                            {{#codes}}
+                                <tr OnClick="codes.selectCode({{id_code}})" class="code_block" id="code_block_{{id_code}}">
+                                    <td>{{code}}</td>
+                                    <td><button class="btn btn-danger btn-xs" OnClick="codes.deleteCode({{id_code}})">delete</button></td>
+                                </tr>
+                            {{/codes}}
+                        </tbody>
+                    </table>
+                </script>
+                <div id="codeFormBlock"></div>
+                <script id="codeFormTemplate" type="x-tmpl-mustache">
+                    <form id="codeForm" class="form-inline">
+                        <div class="form-group">
+                            <label for="newCodeValue">Code</label>
+                            <input class="form-control" type="text" name="code" id="newCodeValue" value="">        
+                        </div>
+                        <button type="button" onclick="codes.CodeForm.save($('#newCodeValue').val())" class="btn btn-default">Add</button>
+                    </form>
+                </script>
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-3">
-                <form id="translation_form">
+                <div id="translationFormBlock"></div>
+                <script id="translationFormTemplate" type="x-tmpl-mustache">
+                    <form id="translationForm" class="form-horizontal">
+                        <input type="hidden" name="id_code" value="{{id_code}}">
 
-                </form>
+                        {{#translations}}
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">{{language}}:</label>
+                                <div class="col-sm-4">
+                                    <textarea class="form-control"  name="translation[{{language}}]">{{translation}}</textarea>
+                                </div>
+                            </div>
+                        {{/translations}}
+
+                        <button type="button" onclick="translation.save({{id_code}})" class="btn btn-default">Save</button>
+
+                    </form>
+                </script>
             </div>
         </div>
         
