@@ -6,7 +6,9 @@ var codes = {
     },
 
     selectCode: function(idCode) {
-
+        $('.code_block').removeClass('success');
+        $('#code_block_' + idCode).addClass('success');
+        translation.render(idCode);
     },
 
     renderWithData: function(arr) {
@@ -17,16 +19,35 @@ var codes = {
         this.el.innerHTML = '';
     },
     
-    MessageForm: {
+    CodeForm: {
         clear:  function() {},
-        save:   function(code) {}
+        save:   function(code) {
+            sendRequest('code/save', {code:code, id_project: idSelectedProject});
+        },
+        render: function() {
+
+            var template = $('#codeFormTemplate').html();
+            var rendered = Mustache.render(template);
+
+            $('#codeFormBlock').html(rendered);
+        },
+        hide:   function() {
+            $('#codeFormBlock').html('');
+        }
     },
     
     
     SearchField: {
-        el: document.getElementById("search_field"),
         clear:      function() {},
-        find:       function(keyword) {},
+        find:       function(keyword) {
+            sendRequest('code/search', {keyword:keyword, id_project: idSelectedProject}, function(response){
+
+            var template = $('#codesTemplate').html();
+            var rendered = Mustache.render(template, response);
+
+            $('#codesBlock').html(rendered);
+        });
+        },
         setValue:   function(value) {},
         getValue:   function() {}        
     }
