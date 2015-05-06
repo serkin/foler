@@ -9,32 +9,57 @@ var projects = {
     },
     reload: function() {
         sendRequest('project/getall',{}, function(response){
-             
-            var template = $('#projectsTemplate').html();
-            var rendered = Mustache.render(template, response.response);
 
-            $('#projects_block').html(rendered);
+            var template = $('#projectsTemplate').html();
+            var rendered = Mustache.render(template, response);
+
+            $('#projectsBlock').html(rendered);
         });
+
+        projects.ProjectForm.render();
+        codes.CodeForm.hide();
     },
 
     selectProjectById: function(idProject) {
-        $('.project_block').removeClass('success');
-        $('#project_block_' + idProject).addClass('success');
-        idSelectedProject = idProject;
+
+            $('.project_block').removeClass('success');
+            $('#project_block_' + idProject).addClass('success');
+            idSelectedProject = idProject;
+            projects.ProjectForm.render(idSelectedProject);
+            
+            codes.CodeForm.render();
+
     },
     export: function(idProject, type) {},
     
     
     ProjectForm: {
         save: function(){
-            var form = document.getElementById('project_form');
-            var data = serialize(form);
+            var data = $('#projectForm').serialize();
 
             sendRequest('project/save', data, function(response){
                 projects.reload();
             });
         },
         clear: function() {},
-        fillWithProjectData: function(idProject) {}
+        render: function(idProject) {
+
+            var template = $('#projectFormTemplate').html();
+
+            if(idProject === undefined) {
+
+                var rendered = Mustache.render(template);
+                $('#projectFormBlock').html(rendered);
+
+            } else {
+
+                sendRequest('project/getone',{id_project:idProject}, function(response){
+
+                    var rendered = Mustache.render(template, response.project);
+                    $('#projectFormBlock').html(rendered);
+                });
+        }
+            
+        }
     }
 };
