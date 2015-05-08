@@ -104,42 +104,40 @@
                         </thead>
                         <tbody>
                             {{#codes}}
-                                <tr OnClick="codes.selectCode({{id_code}})" class="code_block" id="code_block_{{id_code}}">
+                                <tr OnClick="codes.selectCode('{{code}}')" class="code_block">
                                     <td>{{code}}</td>
-                                    <td><button class="btn btn-danger btn-xs" OnClick="codes.deleteCode({{id_code}})">delete</button></td>
+                                    <td><button class="btn btn-danger btn-xs" OnClick="codes.deleteCode('{{code}}')">delete</button></td>
                                 </tr>
                             {{/codes}}
                         </tbody>
                     </table>
                 </script>
-                <div id="codeFormBlock"></div>
-                <script id="codeFormTemplate" type="x-tmpl-mustache">
-                    <form id="codeForm" class="form-inline">
-                        <div class="form-group">
-                            <label for="newCodeValue">Code</label>
-                            <input class="form-control" type="text" name="code" id="newCodeValue" value="">        
-                        </div>
-                        <button type="button" onclick="codes.CodeForm.save($('#newCodeValue').val())" class="btn btn-default">Add</button>
-                    </form>
-                </script>
+
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-3">
                 <div id="translationFormBlock"></div>
                 <script id="translationFormTemplate" type="x-tmpl-mustache">
                     <form id="translationForm" class="form-horizontal">
-                        <input type="hidden" name="id_code" value="{{id_code}}">
+                        <input type="hidden" name="id_project" value="{{id_project}}">
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Code:</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="code" id="code" value="{{code}}">
+                            </div>
+                        </div>
 
                         {{#translations}}
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">{{language}}:</label>
-                                <div class="col-sm-4">
+                                <div class="col-sm-6">
                                     <textarea class="form-control"  name="translation[{{language}}]">{{translation}}</textarea>
                                 </div>
                             </div>
                         {{/translations}}
 
-                        <button type="button" onclick="translation.save({{id_code}})" class="btn btn-default">Save</button>
+                        <button type="button" onclick="translation.save($('#code').val())" class="btn btn-default">Save</button>
 
                     </form>
                 </script>
