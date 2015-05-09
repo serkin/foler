@@ -12,7 +12,7 @@ function sendRequest(action, data, callback) {
             },
             success: function(response)	{
                 if(callback !== "undefined"){
-                    callback(response.response);
+                    callback(response);
                 }
             }
         });
