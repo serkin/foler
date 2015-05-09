@@ -1,16 +1,32 @@
 
 var statusField = {
-    el: document.getElementById("status_field"),
+    el: $('#status_field'),
     setFail: function(message) {
-        this.el.innerHTML = message;
-        console.log(message);
+        this.el.html('<p class="bg-danger">'+message+'</p>');
+        setTimeout(function() {
+            statusField.clear();
+        }, 5000);
     },
     
     setOk: function(message) {
-        this.el.innerHTML = message;
+        this.el.html('<p class="bg-success">'+message+'</p>');
+        setTimeout(function() {
+            statusField.clear();
+        }, 5000);
     },
     
     clear: function() {
-        this.el.innerHTML = '';
+        this.el.html('');
+    },
+    
+    render: function(status) {
+
+        if(status.state === 'Ok') {
+            this.setOk(status.message);
+        }
+        
+        if(status.state === 'notOk') {
+            this.setFail(status.message);
+        }
     }
 };
