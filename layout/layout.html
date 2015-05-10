@@ -66,6 +66,13 @@
                                     <td><button class="btn btn-danger btn-xs" OnClick="projects.deleteProject({{id_project}})"><?php echo $i18n['layout']['delete']; ?></button></td>
                                 </tr>
                             {{/projects}}
+                                    
+                            {{^projects}}
+                                <tr>
+                                    <td colspan="3">{{i18n.no_projects}}</td>
+                                </tr>
+                            {{/projects}}
+                            
                         </tbody>
                     </table>
                 </script>
@@ -104,7 +111,7 @@
 
             </div>
             <div class="col-md-1"></div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <input type="text" class="form-control" id="searchKeyword" onkeyup="codes.SearchField.find($(this).val())" placeholder="<?php echo $i18n['layout']['code_placeholder']; ?>">
                 <div id="codesBlock"></div>
                 <script id="codesTemplate" type="x-tmpl-mustache">
@@ -126,37 +133,55 @@
 
             </div>
             <div class="col-md-1"></div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div id="translationFormBlock"></div>
                 <script id="translationFormTemplate" type="x-tmpl-mustache">
-                    <div style="margin-bottom: 10px;">
-                        <button type="button" onclick="translation.render()" class="btn btn-default"><?php echo $i18n['layout']['new_translation']; ?></button>
-                    </div>
-
-                    <form id="translationForm" class="form-horizontal">
-                        <input type="hidden" name="id_project" value="{{id_project}}">
-
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label"><?php echo $i18n['layout']['code']; ?>:</label>
-                            <div class="col-sm-6">
-                                <input class="form-control" type="text" name="code" id="code" value="{{code}}">
-                            </div>
+                    {{#id_project}}
+                        <div style="margin-bottom: 10px;">
+                            <button type="button" onclick="translation.render()" class="btn btn-default"><?php echo $i18n['layout']['new_translation']; ?></button>
                         </div>
 
-                        {{#translations}}
+                        <form id="translationForm" class="form-horizontal">
+                            <input type="hidden" name="id_project" value="{{id_project}}">
+
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">{{language}}:</label>
+                                <label class="col-sm-2 control-label"><?php echo $i18n['layout']['code']; ?>:</label>
                                 <div class="col-sm-6">
-                                    <textarea class="form-control"  name="translation[{{language}}]">{{translation}}</textarea>
+                                    <input class="form-control" type="text" name="code" id="code" value="{{code}}" required>
                                 </div>
                             </div>
-                        {{/translations}}
 
-                        <button type="button" onclick="translation.save($('#code').val())" class="btn btn-success"><?php echo $i18n['layout']['save']; ?></button>
+                            {{#translations}}
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{{language}}:</label>
+                                    <div class="col-sm-6">
+                                        <textarea class="form-control"  name="translation[{{language}}]">{{translation}}</textarea>
+                                    </div>
+                                </div>
+                            {{/translations}}
 
-                    </form>
+                            <button type="button" onclick="translation.save($('#code').val())" class="btn btn-success"><?php echo $i18n['layout']['save']; ?></button>
+
+                        </form>
+                    {{/id_project}}
                 </script>
             </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <hr>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-10">
+                &nbsp;
+            </div>
+            <div class="col-md-2">
+                <a href="https://github.com/serkin/foler" target="_blank">github</a>
+            </div>
+
         </div>
 
         <!-- Here goes content from all js/*.js files -->
