@@ -11,11 +11,17 @@ class Response {
 
         header('Content-Type: application/json');
 
-        $response = ['error' => $message];
+        $response = [
+            'status' => [
+                'state'     => 'notOk',
+                'message'   => $message
+                ],
+            'data'  => []
+                ];
 
         echo json_encode($response);
         die();
-        
+
     }
 
     public static function responseWithSuccess($arr, $statusMessage = ''){
@@ -23,9 +29,11 @@ class Response {
         header('Content-Type: application/json');
 
         $response = [
-            'status'            => 'ok',
-            'status_message'    => $statusMessage,
-            'response'          => $arr
+            'status' => [
+                'state'     => 'Ok',
+                'message'   => $statusMessage
+                ],
+            'data'  => $arr
                 ];
 
         echo json_encode($response);
