@@ -1,0 +1,18 @@
+﻿<phpunit 
+    bootstrap="vendor/autoload.php"
+    convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+    colors="true"        
+    verbose="true">
+    <php>
+    <var name="db_name" value="fake"/>
+  </php>
+
+    <testsuites>
+
+        <testsuite name="collection">
+            <directory suffix='.php'>tests/unit</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
