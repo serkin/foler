@@ -1,26 +1,24 @@
 
 var codes = {
-    el: document.getElementById("codes_block"),
-    deleteCode: function(id) {
+
+    deleteCode: function(code, searchKeyword) {
+        sendRequest('code/delete', {code:code, id_project: idSelectedProject}, function(response){
+
+            statusField.render(response.status);
+            codes.SearchField.find(searchKeyword);
+            translation.render();
+
+        });
 
     },
 
-    selectCode: function(idCode) {
+    selectCode: function(code, el) {
         $('.code_block').removeClass('success');
-        $('#code_block_' + idCode).addClass('success');
-        translation.render(idCode);
-    },
-
-    renderWithData: function(arr) {
-
-    },
-
-    clear: function() {
-        this.el.innerHTML = '';
+        el.addClass('success');
+        translation.render(code);
     },
     
     CodeForm: {
-        clear:  function() {},
         save:   function(code) {
             sendRequest('code/save', {code:code, id_project: idSelectedProject});
         },
@@ -38,17 +36,15 @@ var codes = {
     
     
     SearchField: {
-        clear:      function() {},
-        find:       function(keyword) {
+
+        find:   function(keyword) {
             sendRequest('code/search', {keyword:keyword, id_project: idSelectedProject}, function(response){
 
             var template = $('#codesTemplate').html();
-            var rendered = Mustache.render(template, response);
+            var rendered = Mustache.render(template, response.data);
 
             $('#codesBlock').html(rendered);
         });
-        },
-        setValue:   function(value) {},
-        getValue:   function() {}        
+        }
     }
 };

@@ -3,45 +3,65 @@ var projects = {
     deleteProject: function(idProject) {
 
         sendRequest('project/delete', {id_project: idProject}, function(response){
+            statusField.render(response.status);
+            translation.render();
             projects.reload();
+            idSelectedProject = null;
 
         });
     },
     reload: function() {
         sendRequest('project/getall',{}, function(response){
 
+            response.data.i18n = i18n;
             var template = $('#projectsTemplate').html();
-            var rendered = Mustache.render(template, response);
+            var rendered = Mustache.render(template, response.data);
 
             $('#projectsBlock').html(rendered);
         });
 
         projects.ProjectForm.render();
-        codes.CodeForm.hide();
     },
 
     selectProjectById: function(idProject) {
 
-            $('.project_block').removeClass('success');
-            $('#project_block_' + idProject).addClass('success');
-            idSelectedProject = idProject;
-            projects.ProjectForm.render(idSelectedProject);
-            
-            codes.CodeForm.render();
+        $('.project_block').removeClass('success');
+        $('#project_block_' + idProject).addClass('success');
+        idSelectedProject = parseInt(idProject);
+        projects.ProjectForm.render(idSelectedProject);
+
+        translation.render();
 
     },
-    export: function(idProject, type) {},
+    export: function(idProject, type, ev) {
+        sendRequest('project/export', {id_project: idProject, type: type}, function(response){
+                statusField.render(response.status);
+        });
+        ev.stopPropagation();
+    },
     
     
     ProjectForm: {
         save: function(){
             var data = $('#projectForm').serialize();
 
-            sendRequest('project/save', data, function(response){
-                projects.reload();
+            sendRequest('project/save', {form: data}, function(response){
+
+                statusField.render(response.status);
+
+                if(response.status.state === 'Ok'){
+                    projects.reload();
+
+                    var id = parseInt(response.data.id_project);
+
+                    if(id > 0){
+                        projects.selectProjectById(id);
+                    }
+                }
+
             });
         },
-        clear: function() {},
+
         render: function(idProject) {
 
             var template = $('#projectFormTemplate').html();
@@ -55,11 +75,10 @@ var projects = {
 
                 sendRequest('project/getone',{id_project:idProject}, function(response){
 
-                    var rendered = Mustache.render(template, response.project);
+                    var rendered = Mustache.render(template, response.data.project);
                     $('#projectFormBlock').html(rendered);
                 });
-        }
-            
+            }
         }
     }
 };

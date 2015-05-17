@@ -1,29 +1,30 @@
 
 
 var translation = {
-    save: function(idCode) {
+    save: function(code) {
 
         var data = $('#translationForm').serialize();
-        console.log(data);
 
         sendRequest('translation/save', {form:data}, function(response){
-            translation.render(idCode);
+            statusField.render(response.status);
+            translation.render(code);
         });
 
     },
 
-    render: function(idCode) {
-        sendRequest('translation/getone', {id_code: idCode}, function(response){
+    render: function(code) {
+
+        var data = (code !== "undefined") ? {code: code, id_project:idSelectedProject} : {id_project:idSelectedProject};
+
+        sendRequest('translation/getone', data, function(response){
+            
+            response.data.id_project = idSelectedProject;
 
             var template = $('#translationFormTemplate').html();
-            var rendered = Mustache.render(template, response);
+            var rendered = Mustache.render(template, response.data);
 
             $('#translationFormBlock').html(rendered);
         });
 
-    },
-
-    clear: function() {
-        this.el.innerHTML = '';
     }
 };
