@@ -26,12 +26,10 @@
                 font-size: 14pt;
             }
         </style>
-        <!--<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
-        <script src="jquery-1.10.2.js"></script>
-        <script src="mustache.min.js"></script>
-        <link rel="stylesheet" href="bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
     </head>
     <body onLoad="projects.reload()">
 
@@ -56,6 +54,7 @@
                         <thead>
                             <th>#</th>
                             <th><?php echo $i18n['layout']['name']; ?></th>
+                            <th><?php echo $i18n['layout']['export']; ?></th>
                             <th><?php echo $i18n['layout']['manage']; ?></th>
                         </thead>
                         <tbody>
@@ -63,6 +62,11 @@
                                 <tr OnClick="projects.selectProjectById({{id_project}})" class="project_block" id="project_block_{{id_project}}">
                                     <td>{{id_project}}</td>
                                     <td>{{name}}</td>
+                                    <td>
+                                        <button class="btn btn-info btn-xs" OnClick="projects.export({{id_project}},'php', event)">php</button>
+                                        &nbsp;
+                                        <button class="btn btn-info btn-xs" OnClick="projects.export({{id_project}},'yaml', event)">yaml</button>
+                                    </td>
                                     <td><button class="btn btn-danger btn-xs" OnClick="projects.deleteProject({{id_project}})"><?php echo $i18n['layout']['delete']; ?></button></td>
                                 </tr>
                             {{/projects}}
