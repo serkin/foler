@@ -1,30 +1,69 @@
 <?php
 
 
+$app['controllers']['project/export'] = function ($app, $request){
 
-$app['controllers']['project/delete'] = function ($app, $request){
-    
-    
-    // Checks if id_oriject exists
-    
-    
-    // Save project
-    
-    // Edit project
-    $data = (array)json_decode($request['form']);
-    
 
-    $idProject = !empty($data['id_project']) ? (int)$data['id_project'] : null;
+    $idProject  = !empty($request['id_project']) ? (int)$request['id_project'] : null;
+    $type       = (!empty($request['type']) && in_array($request['type'], ['php','yaml'])) ? $request['type'] : 'php';
 
     
+    $project    = $app['foler']->getProjectById($idProject);
+    $languages  = $app['foler']->getLanguagesFromProject($idProject);
     
-    $result = $app['foler']->deleteProject($idProject);
     
     
-    if($result):
-        Response::responseWithSuccess(['response' => [], 'message' => 'Project deleted']);
+    $result = true;
+    $directory = $project['path'];
+    
+
+    if(empty($project['path']) or !  is_writable($directory)):
+        $result     = false;
+        $errorMsg   = $app['i18n']['errors']['project_path_not_writable'].': ' . $directory;
     else:
-        Response::responseWithError($app['foler']->getError()[2]);
+        
+        switch ($type) {
+            case 'php':
+                $export = new PHPExport();
+                break;
+
+            case 'yaml':
+                $export = new YAMLExport();
+                break;
+
+            default:
+                break;
+        }
+        
+        $records = $app['foler']->getAllTranslationsFromProject($idProject);
+
+        
+        foreach ($languages as $language):
+            $out = array();
+            
+        
+            foreach ($records as $record):
+                if($record['language'] == $language):
+                    joinStringToArr($record['code'], $record['translation'], $out);
+                endif;
+            endforeach;
+            
+            if($export->export($out, $directory, $language) === false):
+                $result     = false;
+                $errorMsg   = $app['i18n']['errors']['cannot_export_project']. ': ' . $language;
+            endif;
+        
+        endforeach;
+        
+        
     endif;
-    
+
+
+
+    if($result === true):
+        Response::responseWithSuccess([], $app['i18n']['foler']['project_exported']);
+    else:
+        Response::responseWithError($errorMsg);
+    endif;
+
 };

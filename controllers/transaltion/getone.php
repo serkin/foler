@@ -4,13 +4,11 @@
 
 $app['controllers']['translation/getone'] = function ($app, $request){
     
-    $idCode = !empty($request['id_code']) ? (int)$request['id_code'] : null;
+    $code       = !empty($request['code'])          ? $request['code']              : null;
+    $idProject  = !empty($request['id_project'])    ? (int)$request['id_project']   : null;
 
-    if(!is_null($idCode)):
-        $result = $app['foler']->getTranslation($idCode);
-        Response::responseWithSuccess($result);
-    else:
-        Response::responseWithError('Code id not correct');
-    endif;
+
+    $result = $app['foler']->getTranslation($idProject, $code);
+    Response::responseWithSuccess($result);
 
 };

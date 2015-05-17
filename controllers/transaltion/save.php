@@ -1,19 +1,35 @@
 <?php
 
-$app['controllers']['translation/save'] = function ($app, $request){
+$isCodeValid = function($code) {
 
+    return preg_match('/^[a-z0-9_\.]+$/', $code) === 1 ? true : false;
     
-    parse_str($request['form'], $form);
+};
 
-    $idCode = !empty($form['id_code'])      ? (int)$form['id_code'] : null;
-    $arr    = !empty($form['translation'])  ? $form['translation']  : [];
-    
-    $result = $app['foler']->saveTranslation($arr, $idCode);
+$app['controllers']['translation/save'] = function ($app, $request) use($isCodeValid) {
+
+    parse_str(urldecode($request['form']), $form);
+
+
+    $idProject  = !empty($form['id_project'])   ? $form['id_project']   : null;
+    $code       = !empty($form['code'])         ? $form['code']         : null;
+    $arr        = !empty($form['translation'])  ? $form['translation']  : [];
+
+    if(empty($idProject)):
+        $result     = false;
+        $errorMsg   = $app['i18n']['errors']['empty_id_project'];
+    elseif(empty($code) or $isCodeValid($code) === false):
+        $result     = false;
+        $errorMsg   = $app['i18n']['errors']['not_valid_project_code'];
+    else:
+        $result     = $app['foler']->saveTranslation($idProject, $code, $arr);
+        $errorMsg   = $app['foler']->getError()[2];
+    endif;
 
     if($result):
-        Response::responseWithSuccess(['response' => 'ok', 'message' => 'Translation saved']);
+        Response::responseWithSuccess([], $app['i18n']['foler']['translation_saved']);
     else:
-        Response::responseWithError($app['foler']->getError()[2]);
+        Response::responseWithError($errorMsg);
     endif;
 
 };

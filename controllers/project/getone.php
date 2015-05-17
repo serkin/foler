@@ -10,7 +10,7 @@ $app['controllers']['project/getone'] = function ($app, $request){
         $project = $app['foler']->getProjectByID($idProject);
         Response::responseWithSuccess(['project' => $project]);
     else:
-        Response::responseWithError('Project id not correct');
+        Response::responseWithError($app['i18n']['errors']['empty_id_project']);
     endif;
 
 };

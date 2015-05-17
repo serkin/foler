@@ -1,19 +1,51 @@
 <?php
 
-
-
-$app['controllers']['project/save'] = function ($app, $request){
+$isLanguagesValid =  function($languages) {
     
+    $returnValue = true;
 
-    parse_str($request['form'], $data);
-    $idProject = !empty($data['id_project']) ? $data['id_project'] : null;
+    if(strpos($languages, ' ') !== false):
+        $returnValue = false;
+    endif;
     
-    $result = $app['foler']->saveProject($data, $idProject);
+    $uniqueArr = array();
     
-    if($result):
-        Response::responseWithSuccess(['response' => ['id_project' => $result], 'message' => 'Project saved']);
+    foreach (explode(',', $languages) as $value):
+        if(empty($value) or strlen($value) != 2 or isset($uniqueArr[$value])):
+            $returnValue = false;
+        endif;
+        $uniqueArr[$value] = 1;
+    endforeach;
+    
+    return $returnValue;
+
+};
+
+$app['controllers']['project/save'] = function ($app, $request) use ($isLanguagesValid){
+
+    parse_str($request['form'], $form);
+
+    $idProject = !empty($form['id_project']) ? $form['id_project'] : null;
+
+    
+    if(empty($form['languages']) or $isLanguagesValid($form['languages']) === false):
+        $result     = false;
+        $errorMsg   = $app['i18n']['errors']['not_valid_project_languages'];
+    elseif(empty($form['path'])):
+        $result     = false;
+        $errorMsg   = $app['i18n']['errors']['empty_project_export_path'];
+    elseif(empty($form['name'])):
+        $result     = false;
+        $errorMsg   = $app['i18n']['errors']['empty_project_name'];
     else:
-        Response::responseWithError($app['foler']->getError()[2]);
+        $result = $app['foler']->saveProject($form, $idProject);
+        $errorMsg   = $app['foler']->getError()[2];
+    endif;
+
+    if($result):
+        Response::responseWithSuccess(['id_project' => $result], $app['i18n']['foler']['project_saved']);
+    else:
+        Response::responseWithError($errorMsg);
     endif;
     
 };
