@@ -2,11 +2,6 @@
 
 class Foler {
 
-    /**
-     *
-     * @var array
-     */
-    protected $i18n = [];
     
     /**
      *
@@ -47,8 +42,6 @@ class Foler {
      */
     public function __construct($dbDSN, $dbUser, $dbPassword = '', $i18n = []) {
 
-        
-        $this->i18n         = $i18n;
 
         $this->dbDSN        = $dbDSN;
         $this->dbUser       = $dbUser;
@@ -65,36 +58,13 @@ class Foler {
     public function connect(){
         $dbh = new PDO($this->dbDSN, $this->dbUser, $this->dbPassword);
         $this->dbh = $dbh;
+        $this->dbh->exec('SET NAMES utf8');
     }
     
-    /**
-     * Sets error
-     * 
-     * @param string $error
-     * @return void
-     */
-    public function setError($error)
-    {
-        $this->error($error);
-    }
-
-    /**
-     * Clears last error
-     * 
-     * @return void
-     */
-    private function clearError() {
-        $this->error = null;
-    }
 
     public function getError()
     {
         return $this->dbh->errorInfo();
-    }
-    
-    public function hasError()
-    {
-        $this->dbh->errorInfo();
     }
 
     /**
@@ -119,7 +89,7 @@ class Foler {
     public function getAllCodes($idProject, $keyword = null)
     {
 
-        $sth = $this->dbh->prepare('SELECT * FROM `code` WHERE `id_project` = ? and `code` like ?');
+        $sth = $this->dbh->prepare('SELECT DISTINCT (`code`) FROM `translation` WHERE `id_project` = ? and `code` like ?');
 
         $keyword = !is_null($keyword) ? "%$keyword%" : '';
 
@@ -131,42 +101,60 @@ class Foler {
     }
 
     /**
-     * Gets translation according with given code
+     * Gets translation according with given code and idProject or all records
      * 
-     * @param integer $idCode
+     * @param integer $idProject
+     * @param string $code
      * @return array
      */
-    public function getTranslation($idCode){
+    public function getTranslation($idProject, $code = null){
 
-        $idProject = $this->getProjectIdByCodeId($idCode);
-        
         $languages = $this->getLanguagesFromProject($idProject);
 
-        ChromePhp::log($languages);
-        $sth = $this->dbh->prepare('SELECT * FROM `translation` WHERE `id_code` = ?');
-        $sth->bindParam(1, $idCode, PDO::PARAM_INT);
+        $dbRecords = !is_null($code) ? $this->getCodeTranslation($idProject, $code) : [];
 
-        $sth->execute();
 
-        foreach($sth->fetchAll(PDO::FETCH_ASSOC) as $record):
-            $result[$record['language']] = $record['translation'];
-        endforeach;
-        
-        ChromePhp::log($result);
-
-        $returnValue = [];
-        $returnValue['id_code'] = $idCode;
+        $returnValue = array();
+        $returnValue['code'] = $code;
 
         foreach ($languages as $lang):
             $returnValue['translations'][] = [
                 'language'      => $lang,
-                'translation'   => !empty($result[$lang]) ? $result[$lang] : ''
+                'translation'   => !empty($dbRecords[$lang]) ? $dbRecords[$lang] : ''
             ];
         endforeach;
 
         return $returnValue;      
 
+    }
+    
+    public function getAllTranslationsFromProject($idProject)
+    {
+        
+        $sth = $this->dbh->prepare('SELECT * FROM `translation` WHERE `id_project` = ?');
+        $sth->bindParam(1, $idProject, PDO::PARAM_INT);
+        $sth->execute();
 
+        return $sth->fetchAll(PDO::FETCH_ASSOC);
+
+    }
+
+
+    private function getCodeTranslation($idProject, $code)
+    {
+        $returnValue = array();
+ 
+        $sth = $this->dbh->prepare('SELECT * FROM `translation` WHERE `id_project` = ? and `code` = ?');
+        $sth->bindParam(1, $idProject, PDO::PARAM_INT);
+        $sth->bindParam(2, $code, PDO::PARAM_STR);
+
+        $sth->execute();
+
+        foreach($sth->fetchAll(PDO::FETCH_ASSOC) as $record):
+            $returnValue[$record['language']] = $record['translation'];
+        endforeach;
+
+        return $returnValue;
     }
 
     /**
@@ -194,24 +182,6 @@ class Foler {
         
     }
 
-    /**
-     * Saves translation code
-     * 
-     * @param string $code
-     * @param int $idProject
-     * @return boolean
-     */
-    public function saveCode($code, $idProject)
-    {
-
-        $sth = $this->dbh->prepare('INSERT INTO `code` (`code`,`id_project`) VALUES(?, ?)');
-
-        $sth->bindParam(1, $code, PDO::PARAM_STR);
-        $sth->bindParam(2, $idProject, PDO::PARAM_INT);
-        $sth->execute();
-
-        return $this->dbh->lastInsertId() ? $this->dbh->lastInsertId() : false;
-    }
 
     /**
      * Saves project
@@ -224,18 +194,23 @@ class Foler {
      */
     public function saveProject($arr, $idProject = null){
 
-        $returnValue = false;
+        if(is_null($idProject)):
+            $sth = $this->dbh->prepare('INSERT INTO `project` (`name`, `path`, `languages`) VALUES(?, ?, ?)');
+        else:
+            $sth = $this->dbh->prepare('UPDATE `project` SET `name` = ?, `path` = ?, `languages` = ? WHERE `id_project` = ?');
+        endif;
+
+        $sth->bindParam(1, $arr['name'],        PDO::PARAM_STR);
+        $sth->bindParam(2, $arr['path'],        PDO::PARAM_STR);
+        $sth->bindParam(3, $arr['languages'],   PDO::PARAM_STR);
 
         if(is_null($idProject)):
-            $sql = "INSERT INTO `project` (`name`, `path`, `languages`) VALUES('{$arr['name']}', '{$arr['path']}', '{$arr['languages']}')";
-            $this->dbh->exec($sql) ? true : false;
-            $returnValue = $this->dbh->lastInsertId() ? $this->dbh->lastInsertId() : false;
-
+            $sth->execute();
+            $returnValue = $this->dbh->lastInsertId() ? $this->dbh->lastInsertId() : 0;
         else:
-            
-            // TODO bind params
-            $sql = "UPDATE `project` SET `name` = '{$arr['name']}', `path` = '{$arr['path']}', `languages` = '{$arr['languages']}' WHERE `id_project` = " . $idProject;
-            $returnValue = $this->dbh->exec($sql) ? $idProject : false;
+            $sth->bindParam(4, $idProject, PDO::PARAM_INT);
+            $sth->execute();
+            $returnValue = $idProject;
         endif;
 
         return $returnValue;
@@ -246,6 +221,7 @@ class Foler {
      * Removes project
      * 
      * @param int $idProject
+     * 
      * @return boolean
      */
     public function deleteProject($idProject){
@@ -257,26 +233,31 @@ class Foler {
 
     /**
      * 
+     * @param integer $idProject
+     * @param string $code
      * @param array $arr
-     * @param integer $idCode
+     * 
      * @return boolean
      */
-    public function saveTranslation($arr, $idCode)
+    public function saveTranslation($idProject, $code, $arr)
     {
         
 
-        $languages = $this->getLanguagesFromProject($this->getProjectIdByCodeId($idCode));
+        $languages = $this->getLanguagesFromProject($idProject);
 
         foreach ($languages as $language):
             
             if(isset($arr[$language])):
                 $value = !empty($arr[$language]) ? $arr[$language] : '';
             
-                $sth = $this->dbh->prepare('INSERT INTO `translation` (`id_code`,`language`, `translation`) VALUES(?, ?, ?)');
+                $sth = $this->dbh->prepare('INSERT INTO `translation` (`id_project`, `code`, `language`, `translation`) VALUES(?, ?, ?, ?)'
+                        . 'ON DUPLICATE KEY UPDATE `translation` = ?');
                 
-                $sth->bindParam(1, $idCode, PDO::PARAM_INT);
-                $sth->bindParam(2, $language, PDO::PARAM_STR);
-                $sth->bindParam(3, $value, PDO::PARAM_STR);
+                $sth->bindParam(1, $idProject,  PDO::PARAM_INT);
+                $sth->bindParam(2, $code,       PDO::PARAM_STR);
+                $sth->bindParam(3, $language,   PDO::PARAM_STR);
+                $sth->bindParam(4, $value,      PDO::PARAM_STR);
+                $sth->bindParam(5, $value,      PDO::PARAM_STR);
 
                 if($sth->execute() === false):
                     return false;
@@ -288,23 +269,25 @@ class Foler {
     }
     
     /**
-     * 
-     * @param integer $idCode
-     * @return boolean
-     */
-    public function deleteCodeFromProject($idCode){}
-    
-    /**
-     * 
      * @param integer $idProject
-     * @param string $exportType
+     * @param string $code
+     * 
      * @return boolean
      */
-    public function exportProject($idProject, $exportType){}
-    
-    private function getLanguagesFromProject($idProject){
+    public function deleteCode($idProject, $code)
+    {
+        $sth = $this->dbh->prepare('DELETE FROM `translation` WHERE `code` = ? and `id_project` = ?');
 
-        $returnValue = [];
+        $sth->bindParam(1, $code,       PDO::PARAM_STR);
+        $sth->bindParam(2, $idProject,  PDO::PARAM_INT);
+ 
+        return $sth->execute();
+    }
+    
+    
+    public function getLanguagesFromProject($idProject){
+
+        $returnValue = array();
 
         $data = $this->getProjectById($idProject);
         
