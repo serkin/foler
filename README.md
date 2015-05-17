@@ -1,1 +1,1 @@
-#One-page website translation system
+#Web based single page translation system
