@@ -1,3 +1,8 @@
 <?php
 
-// Content from ExportInterface file
+
+interface ExportInterface
+{
+    
+    public function export($arr, $directory, $language);
+}
