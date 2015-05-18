@@ -38,9 +38,8 @@ class Foler {
      * @param string $dbDSN
      * @param string $dbUser
      * @param string $dbPassword
-     * @param array $i18n
      */
-    public function __construct($dbDSN, $dbUser, $dbPassword = '', $i18n = []) {
+    public function __construct($dbDSN, $dbUser, $dbPassword = '') {
 
 
         $this->dbDSN        = $dbDSN;
