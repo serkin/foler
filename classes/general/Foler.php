@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @author Serkin Alexander <serkin.alexander@gmail.com>
+ */
 class Foler {
 
     
