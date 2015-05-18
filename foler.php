@@ -1791,6 +1791,15 @@ endif;
                 padding: 10px;
                 font-size: 14pt;
             }
+            #codesBlock {
+                margin-top: 10px;
+            }
+            #newTranslationButton {
+                margin-bottom: 10px;
+            }
+            #searchKeyword {
+                display: none;
+            }
         </style>
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
@@ -1801,7 +1810,7 @@ endif;
 
         <div class="row">
             <div class="col-md-8">
-                <h2><?php echo $i18n['layout']['title']; ?></h2>
+                <h4><?php echo $i18n['layout']['title']; ?></h4>
             </div>
             <div class="col-md-3">
                 <div id="status_field">&nbsp;</div>
@@ -1839,7 +1848,7 @@ endif;
                                     
                             {{^projects}}
                                 <tr>
-                                    <td colspan="3">{{i18n.no_projects}}</td>
+                                    <td colspan="4">{{i18n.no_projects}}</td>
                                 </tr>
                             {{/projects}}
                             
@@ -1907,7 +1916,7 @@ endif;
                 <div id="translationFormBlock"></div>
                 <script id="translationFormTemplate" type="x-tmpl-mustache">
                     {{#id_project}}
-                        <div style="margin-bottom: 10px;">
+                        <div id="newTranslationButton">
                             <button type="button" onclick="translation.render()" class="btn btn-default"><?php echo $i18n['layout']['new_translation']; ?></button>
                         </div>
 
@@ -2025,7 +2034,14 @@ var codes = {
 
             $('#codesBlock').html(rendered);
         });
+        },
+        show: function() {
+            $('#searchKeyword').show();
+        },
+        hide: function() {
+            $('#searchKeyword').hide();
         }
+        
     }
 };
 var locale = 'en';
@@ -2073,6 +2089,7 @@ var projects = {
         projects.ProjectForm.render(idSelectedProject);
 
         translation.render();
+        codes.SearchField.show();
 
     },
     export: function(idProject, type, ev) {
