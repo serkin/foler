@@ -26,6 +26,7 @@ $app['config'] = array(
 ## TODO
 * Add Russian localization
 * Add German localization
+* Add export to xliff
 
 ## Licence
 * MIT
