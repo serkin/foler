@@ -10,6 +10,7 @@ $app['config'] = array(
         'user'      => 'root',
         'password'  => ''
     ),
+    'url' => $_SERVER['PHP_SELF'],
     'debug' => false
 );
 
@@ -1952,6 +1953,9 @@ endif;
             </div>
 
         </div>
+        <script>
+            url = '<?php echo $app["config"]["url"]; ?>';
+        </script>
 
         <!-- Here goes content from all js/*.js files -->
         <script>
@@ -1961,7 +1965,7 @@ function sendRequest(action, data, callback) {
 
     $.ajax({
             type: 'post',
-            url: 'foler.php?action='+action,
+            url: url + '?action='+action,
             data: data,
             error: function()	{
                 alert('Connection lost');
