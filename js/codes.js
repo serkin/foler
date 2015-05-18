@@ -45,6 +45,13 @@ var codes = {
 
             $('#codesBlock').html(rendered);
         });
+        },
+        show: function() {
+            $('#searchKeyword').show();
+        },
+        hide: function() {
+            $('#searchKeyword').hide();
         }
+        
     }
 };

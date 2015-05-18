@@ -31,6 +31,7 @@ var projects = {
         projects.ProjectForm.render(idSelectedProject);
 
         translation.render();
+        codes.SearchField.show();
 
     },
     export: function(idProject, type, ev) {
