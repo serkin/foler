@@ -5,7 +5,7 @@ function sendRequest(action, data, callback) {
 
     $.ajax({
             type: 'post',
-            url: 'foler.php?action='+action,
+            url: url + '?action='+action,
             data: data,
             error: function()	{
                 alert('Connection lost');

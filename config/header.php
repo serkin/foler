@@ -8,6 +8,7 @@ $app['config'] = array(
         'user'      => 'root',
         'password'  => ''
     ),
+    'url' => $_SERVER['PHP_SELF'],
     'debug' => false
 );
 
