@@ -2,8 +2,7 @@
 
 /**
  * Class creates two types of response according having error
- *
- * @author Serkin Alexander
+ * @author Serkin Alexander <serkin.alexander@gmail.com>
  */
 class Response {
 
@@ -11,13 +10,13 @@ class Response {
 
         header('Content-Type: application/json');
 
-        $response = [
-            'status' => [
+        $response = array(
+            'status' => array(
                 'state'     => 'notOk',
                 'message'   => $message
-                ],
-            'data'  => []
-                ];
+                ),
+            'data'  => array()
+                );
 
         echo json_encode($response);
         die();
@@ -28,13 +27,13 @@ class Response {
 
         header('Content-Type: application/json');
 
-        $response = [
-            'status' => [
+        $response = array(
+            'status' => array(
                 'state'     => 'Ok',
                 'message'   => $statusMessage
-                ],
+                ),
             'data'  => $arr
-                ];
+                );
 
         echo json_encode($response);
         die();
