@@ -113,17 +113,17 @@ class Foler {
 
         $languages = $this->getLanguagesFromProject($idProject);
 
-        $dbRecords = !is_null($code) ? $this->getCodeTranslation($idProject, $code) : [];
+        $dbRecords = !is_null($code) ? $this->getCodeTranslation($idProject, $code) : array();
 
 
         $returnValue = array();
         $returnValue['code'] = $code;
 
         foreach ($languages as $lang):
-            $returnValue['translations'][] = [
+            $returnValue['translations'][] = array(
                 'language'      => $lang,
                 'translation'   => !empty($dbRecords[$lang]) ? $dbRecords[$lang] : ''
-            ];
+            );
         endforeach;
 
         return $returnValue;      

@@ -14,12 +14,13 @@ $app['controllers']['code/delete'] = function ($app, $request){
         $errorMsg   = $app['i18n']['errors']['empty_code'];
     else:
         $result = $app['foler']->deleteCode($idProject, $code);
-        $errorMsg   = $app['foler']->getError()[2];
+        $error      = $app['foler']->getError();
+        $errorMsg   = $error[2];
     endif;
 
 
     if($result):
-        Response::responseWithSuccess([], $app['i18n']['foler']['code_removed']);
+        Response::responseWithSuccess(array(), $app['i18n']['foler']['code_removed']);
     else:
         Response::responseWithError($errorMsg);
     endif;

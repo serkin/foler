@@ -1197,17 +1197,17 @@ class Foler {
 
         $languages = $this->getLanguagesFromProject($idProject);
 
-        $dbRecords = !is_null($code) ? $this->getCodeTranslation($idProject, $code) : [];
+        $dbRecords = !is_null($code) ? $this->getCodeTranslation($idProject, $code) : array();
 
 
         $returnValue = array();
         $returnValue['code'] = $code;
 
         foreach ($languages as $lang):
-            $returnValue['translations'][] = [
+            $returnValue['translations'][] = array(
                 'language'      => $lang,
                 'translation'   => !empty($dbRecords[$lang]) ? $dbRecords[$lang] : ''
-            ];
+            );
         endforeach;
 
         return $returnValue;      
@@ -1484,12 +1484,13 @@ $app['controllers']['code/delete'] = function ($app, $request){
         $errorMsg   = $app['i18n']['errors']['empty_code'];
     else:
         $result = $app['foler']->deleteCode($idProject, $code);
-        $errorMsg   = $app['foler']->getError()[2];
+        $error      = $app['foler']->getError();
+        $errorMsg   = $error[2];
     endif;
 
 
     if($result):
-        Response::responseWithSuccess([], $app['i18n']['foler']['code_removed']);
+        Response::responseWithSuccess(array(), $app['i18n']['foler']['code_removed']);
     else:
         Response::responseWithError($errorMsg);
     endif;
@@ -1507,7 +1508,7 @@ $app['controllers']['code/search'] = function ($app, $request){
     $idProject  = !empty($request['id_project'])    ? (int)$request['id_project']   : null;
 
     $codes = $app['foler']->getAllCodes($idProject, $keyword);
-    Response::responseWithSuccess(['codes' => $codes]);   
+    Response::responseWithSuccess(array('codes' => $codes));
 
 };
 
@@ -1527,12 +1528,13 @@ $app['controllers']['project/delete'] = function ($app, $request){
         $errorMsg   = $app['i18n']['errors']['empty_id_project'];
     else:
         $result     = $app['foler']->deleteProject($idProject);
-        $errorMsg   = $app['foler']->getError()[2];
+        $error      = $app['foler']->getError();
+        $errorMsg   = $error[2];
     endif;
 
 
     if($result):
-        Response::responseWithSuccess([], $app['i18n']['foler']['project_removed']);
+        Response::responseWithSuccess(array(), $app['i18n']['foler']['project_removed']);
     else:
         Response::responseWithError($errorMsg);
     endif;
@@ -1547,7 +1549,7 @@ $app['controllers']['project/export'] = function ($app, $request){
 
 
     $idProject  = !empty($request['id_project']) ? (int)$request['id_project'] : null;
-    $type       = (!empty($request['type']) && in_array($request['type'], ['php','yaml'])) ? $request['type'] : 'php';
+    $type       = (!empty($request['type']) && in_array($request['type'], array('php','yaml'))) ? $request['type'] : 'php';
 
     
     $project    = $app['foler']->getProjectById($idProject);
@@ -1603,7 +1605,7 @@ $app['controllers']['project/export'] = function ($app, $request){
 
 
     if($result === true):
-        Response::responseWithSuccess([], $app['i18n']['foler']['project_exported']);
+        Response::responseWithSuccess(array(), $app['i18n']['foler']['project_exported']);
     else:
         Response::responseWithError($errorMsg);
     endif;
@@ -1617,7 +1619,7 @@ $app['controllers']['project/export'] = function ($app, $request){
 $app['controllers']['project/getall'] = function ($app, $request){
     
     $projects = $app['foler']->getAllProjects();
-    Response::responseWithSuccess(['projects' => $projects]);
+    Response::responseWithSuccess(array('projects' => $projects));
     
 };
 
@@ -1632,7 +1634,7 @@ $app['controllers']['project/getone'] = function ($app, $request){
 
     if(!is_null($idProject)):
         $project = $app['foler']->getProjectByID($idProject);
-        Response::responseWithSuccess(['project' => $project]);
+        Response::responseWithSuccess(array('project' => $project));
     else:
         Response::responseWithError($app['i18n']['errors']['empty_id_project']);
     endif;
@@ -1680,12 +1682,13 @@ $app['controllers']['project/save'] = function ($app, $request) use ($isLanguage
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_project_name'];
     else:
-        $result = $app['foler']->saveProject($form, $idProject);
-        $errorMsg   = $app['foler']->getError()[2];
+        $result     = $app['foler']->saveProject($form, $idProject);
+        $error      = $app['foler']->getError();
+        $errorMsg   = $error[2];
     endif;
 
     if($result):
-        Response::responseWithSuccess(['id_project' => $result], $app['i18n']['foler']['project_saved']);
+        Response::responseWithSuccess(array('id_project' => $result), $app['i18n']['foler']['project_saved']);
     else:
         Response::responseWithError($errorMsg);
     endif;
@@ -1724,7 +1727,7 @@ $app['controllers']['translation/save'] = function ($app, $request) use($isCodeV
 
     $idProject  = !empty($form['id_project'])   ? $form['id_project']   : null;
     $code       = !empty($form['code'])         ? $form['code']         : null;
-    $arr        = !empty($form['translation'])  ? $form['translation']  : [];
+    $arr        = !empty($form['translation'])  ? $form['translation']  : array();
 
     if(empty($idProject)):
         $result     = false;
@@ -1734,11 +1737,12 @@ $app['controllers']['translation/save'] = function ($app, $request) use($isCodeV
         $errorMsg   = $app['i18n']['errors']['not_valid_project_code'];
     else:
         $result     = $app['foler']->saveTranslation($idProject, $code, $arr);
-        $errorMsg   = $app['foler']->getError()[2];
+        $error      = $app['foler']->getError();
+        $errorMsg   = $error[2];
     endif;
 
     if($result):
-        Response::responseWithSuccess([], $app['i18n']['foler']['translation_saved']);
+        Response::responseWithSuccess(array(), $app['i18n']['foler']['translation_saved']);
     else:
         Response::responseWithError($errorMsg);
     endif;
