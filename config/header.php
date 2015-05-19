@@ -5,7 +5,7 @@ $app = array();
 $app['config'] = array(
     'db' => array(
         'dsn'      => 'mysql:dbname=foler;host=localhost',
-        'user'      => 'root',
+        'user'      => 'foler',
         'password'  => ''
     ),
     'url' => $_SERVER['PHP_SELF'],
