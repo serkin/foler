@@ -8,6 +8,6 @@ $app['controllers']['code/search'] = function ($app, $request){
     $idProject  = !empty($request['id_project'])    ? (int)$request['id_project']   : null;
 
     $codes = $app['foler']->getAllCodes($idProject, $keyword);
-    Response::responseWithSuccess(['codes' => $codes]);   
+    Response::responseWithSuccess(array('codes' => $codes));
 
 };

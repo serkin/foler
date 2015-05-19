@@ -38,12 +38,13 @@ $app['controllers']['project/save'] = function ($app, $request) use ($isLanguage
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_project_name'];
     else:
-        $result = $app['foler']->saveProject($form, $idProject);
-        $errorMsg   = $app['foler']->getError()[2];
+        $result     = $app['foler']->saveProject($form, $idProject);
+        $error      = $app['foler']->getError();
+        $errorMsg   = $error[2];
     endif;
 
     if($result):
-        Response::responseWithSuccess(['id_project' => $result], $app['i18n']['foler']['project_saved']);
+        Response::responseWithSuccess(array('id_project' => $result), $app['i18n']['foler']['project_saved']);
     else:
         Response::responseWithError($errorMsg);
     endif;

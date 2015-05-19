@@ -13,7 +13,7 @@ $app['controllers']['translation/save'] = function ($app, $request) use($isCodeV
 
     $idProject  = !empty($form['id_project'])   ? $form['id_project']   : null;
     $code       = !empty($form['code'])         ? $form['code']         : null;
-    $arr        = !empty($form['translation'])  ? $form['translation']  : [];
+    $arr        = !empty($form['translation'])  ? $form['translation']  : array();
 
     if(empty($idProject)):
         $result     = false;
@@ -23,11 +23,12 @@ $app['controllers']['translation/save'] = function ($app, $request) use($isCodeV
         $errorMsg   = $app['i18n']['errors']['not_valid_project_code'];
     else:
         $result     = $app['foler']->saveTranslation($idProject, $code, $arr);
-        $errorMsg   = $app['foler']->getError()[2];
+        $error      = $app['foler']->getError();
+        $errorMsg   = $error[2];
     endif;
 
     if($result):
-        Response::responseWithSuccess([], $app['i18n']['foler']['translation_saved']);
+        Response::responseWithSuccess(array(), $app['i18n']['foler']['translation_saved']);
     else:
         Response::responseWithError($errorMsg);
     endif;

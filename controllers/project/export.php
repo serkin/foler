@@ -5,7 +5,7 @@ $app['controllers']['project/export'] = function ($app, $request){
 
 
     $idProject  = !empty($request['id_project']) ? (int)$request['id_project'] : null;
-    $type       = (!empty($request['type']) && in_array($request['type'], ['php','yaml'])) ? $request['type'] : 'php';
+    $type       = (!empty($request['type']) && in_array($request['type'], array('php','yaml'))) ? $request['type'] : 'php';
 
     
     $project    = $app['foler']->getProjectById($idProject);
@@ -61,7 +61,7 @@ $app['controllers']['project/export'] = function ($app, $request){
 
 
     if($result === true):
-        Response::responseWithSuccess([], $app['i18n']['foler']['project_exported']);
+        Response::responseWithSuccess(array(), $app['i18n']['foler']['project_exported']);
     else:
         Response::responseWithError($errorMsg);
     endif;
