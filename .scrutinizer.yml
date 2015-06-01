@@ -1,8 +1,7 @@
 filter:
-    excluded_paths: [tests/*, i18n/*, js/*, layout/*]
+    paths: [classes/*, controllers/*]
     excluded_paths:
-        - classes/export/Spyc.php
-        - foler.php
+        - classes/export/Spyc.php        
 
 checks:
     php:
