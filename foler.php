@@ -2,17 +2,17 @@
 // Source: config/header.php
 
 
-$app = array();
+$app = [];
 
-$app['config'] = array(
-    'db' => array(
-        'dsn'      => 'mysql:dbname=foler;host=localhost',
+$app['config'] = [
+    'db' => [
+        'dsn'       => 'mysql:dbname=foler;host=localhost',
         'user'      => 'foler',
         'password'  => ''
-    ),
+    ],
     'url' => $_SERVER['PHP_SELF'],
     'debug' => false
-);
+];
 
 
 
@@ -32,19 +32,20 @@ $app['locale'] = 'en';
  * @param type $value
  * @param array $arr
  */
-function joinStringToArr($string, $value, &$arr = array()) {
+function joinStringToArr($string, $value, &$arr = []) {
     
-        $keys = explode('.', $string);
+    $keys = explode('.', $string);
 
-        $ref = &$arr;
+    $ref = &$arr;
 
-        while ($key = array_shift($keys)) {
-            $ref = &$ref[$key];
-        }
-
-        $ref = $value;
-
+    while ($key = array_shift($keys)) {
+        $ref = &$ref[$key];
     }
+
+    $ref = $value;
+
+}
+
 
 // Source: classes/export/ExportInterface.php
 
@@ -1274,11 +1275,14 @@ class Foler {
      * 
      * Edits project if $idProject was specified
      * 
-     * @param array $arr
+     * @param string $name
+     * @param string $path
+     * @param string $languages
      * @param integer $idProject
+     * 
      * @return int|boolean False on error
      */
-    public function saveProject($arr, $idProject = null){
+    public function saveProject($name, $path, $languages, $idProject = null){
 
         if(is_null($idProject)):
             $sth = $this->dbh->prepare('INSERT INTO `project` (`name`, `path`, `languages`) VALUES(?, ?, ?)');
@@ -1286,9 +1290,9 @@ class Foler {
             $sth = $this->dbh->prepare('UPDATE `project` SET `name` = ?, `path` = ?, `languages` = ? WHERE `id_project` = ?');
         endif;
 
-        $sth->bindParam(1, $arr['name'],        PDO::PARAM_STR);
-        $sth->bindParam(2, $arr['path'],        PDO::PARAM_STR);
-        $sth->bindParam(3, $arr['languages'],   PDO::PARAM_STR);
+        $sth->bindParam(1, $name,        PDO::PARAM_STR);
+        $sth->bindParam(2, $path,        PDO::PARAM_STR);
+        $sth->bindParam(3, $languages,   PDO::PARAM_STR);
 
         if(is_null($idProject)):
             $sth->execute();
@@ -1682,7 +1686,7 @@ $app['controllers']['project/save'] = function ($app, $request) use ($isLanguage
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_project_name'];
     else:
-        $result     = $app['foler']->saveProject($form, $idProject);
+        $result     = $app['foler']->saveProject($form['name'], $form['path'], $form['languages'], $idProject);
         $error      = $app['foler']->getError();
         $errorMsg   = $error[2];
     endif;
