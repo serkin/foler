@@ -190,11 +190,14 @@ class Foler {
      * 
      * Edits project if $idProject was specified
      * 
-     * @param array $arr
+     * @param string $name
+     * @param string $path
+     * @param string $languages
      * @param integer $idProject
+     * 
      * @return int|boolean False on error
      */
-    public function saveProject($arr, $idProject = null){
+    public function saveProject($name, $path, $languages, $idProject = null){
 
         if(is_null($idProject)):
             $sth = $this->dbh->prepare('INSERT INTO `project` (`name`, `path`, `languages`) VALUES(?, ?, ?)');
@@ -202,9 +205,9 @@ class Foler {
             $sth = $this->dbh->prepare('UPDATE `project` SET `name` = ?, `path` = ?, `languages` = ? WHERE `id_project` = ?');
         endif;
 
-        $sth->bindParam(1, $arr['name'],        PDO::PARAM_STR);
-        $sth->bindParam(2, $arr['path'],        PDO::PARAM_STR);
-        $sth->bindParam(3, $arr['languages'],   PDO::PARAM_STR);
+        $sth->bindParam(1, $name,        PDO::PARAM_STR);
+        $sth->bindParam(2, $path,        PDO::PARAM_STR);
+        $sth->bindParam(3, $languages,   PDO::PARAM_STR);
 
         if(is_null($idProject)):
             $sth->execute();

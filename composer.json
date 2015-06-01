@@ -1,7 +1,7 @@
 {
     "name": "serkin/foler",
     "type": "project",
-    "description": "Single page translation system for websites",
+    "description": "Single file translation system for websites",
     "keywords": ["localization","i18n", "translation"],
     "homepage": "https://github.com/serkin/foler",
     "license": "MIT",
@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3",
+        "php": ">=5.5",
         "ext-pdo_mysql": "*"
     },
     "require-dev": {

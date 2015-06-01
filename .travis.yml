@@ -1,0 +1,25 @@
+language: php
+
+php:
+  - 5.5
+  - 5.6
+  - 7.0
+
+
+sudo: false
+
+before_install:
+  - mysql -uroot -e "CREATE DATABASE test_foler"
+  - mysql -uroot < dump.sql
+  - composer self-update  
+
+before_script:
+  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then composer require satooshi/php-coveralls:dev-master -n ; fi
+  - if [[ "$TRAVIS_PHP_VERSION" != '5.6' ]]; then composer install -n ; fi
+
+script:
+  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then vendor/bin/phpunit --coverage-clover clover.xml ; fi
+  - if [[ "$TRAVIS_PHP_VERSION" != '5.6' ]]; then vendor/bin/phpunit ; fi
+
+after_script:
+  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then php vendor/bin/coveralls -v ; fi
