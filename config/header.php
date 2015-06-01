@@ -30,7 +30,7 @@ $app['locale'] = 'en';
  * @param type $value
  * @param array $arr
  */
-function joinStringToArr($string, $value, &$arr = array()) {
+function joinStringToArr($string, $value, &$arr = []) {
     
     $keys = explode('.', $string);
 
