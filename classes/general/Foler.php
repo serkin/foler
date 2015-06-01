@@ -215,9 +215,11 @@ class Foler
      */
     public function deleteProject($idProject)
     {
-        $sql = 'DELETE FROM `project` WHERE `id_project` = '.$idProject;
+        $sth = $this->dbh->prepare('DELETE FROM `project` WHERE `id_project` = ?');
+        
+        $sth->bindParam(1, $idProject,  PDO::PARAM_INT);
 
-        return $this->dbh->exec($sql) ? true : false;
+        return $sth->execute();
     }
 
     /**

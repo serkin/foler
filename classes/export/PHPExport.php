@@ -1,6 +1,5 @@
 <?php
 
-
 class PHPExport implements ExportInterface
 {
     public function export($arr, $directory, $language)
