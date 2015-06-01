@@ -10,7 +10,7 @@ sudo: false
 
 before_install:
   - mysql -uroot -e "CREATE DATABASE test_foler"
-  - mysql -uroot < dump.sql
+  - mysql -uroot test_foler < dump.sql
   - composer self-update  
 
 before_script:
