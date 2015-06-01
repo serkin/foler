@@ -7,4 +7,11 @@
 /.travis.yml        export-ignore
 /phpunit.xml.dist   export-ignore
 /.scrutinizer.yml   export-ignore
+/classes            export-ignore
+/layout             export-ignore
+/js                 export-ignore
+/i18n               export-ignore
+/screenshot.png     export-ignore
 /tests              export-ignore
+/config             export-ignore
+/controllers        export-ignore
