@@ -3,7 +3,7 @@
 
 $app['controllers']['project/export'] = function ($app, $request) {
 
-    $idProject  = !empty($request['id_project']) ? (int) $request['id_project'] : null;
+    $idProject  = !empty($request['id_project']) ? (int)$request['id_project'] : null;
     $type       = (!empty($request['type']) && in_array($request['type'], array('php', 'yaml'))) ? $request['type'] : 'php';
 
     $project    = $app['foler']->getProjectById($idProject);
@@ -12,9 +12,9 @@ $app['controllers']['project/export'] = function ($app, $request) {
     $result = true;
     $directory = $project['path'];
 
-    if (empty($project['path']) or !  is_writable($directory)):
+    if (empty($project['path']) or !is_writable($directory)):
         $result     = false;
-        $errorMsg   = $app['i18n']['errors']['project_path_not_writable'].': '.$directory;
+        $errorMsg   = $app['i18n']['errors']['project_path_not_writable'] . ': ' . $directory;
     else:
 
         switch ($type) {
@@ -43,7 +43,7 @@ $app['controllers']['project/export'] = function ($app, $request) {
 
             if ($export->export($out, $directory, $language) === false):
                 $result     = false;
-                $errorMsg   = $app['i18n']['errors']['cannot_export_project'].': '.$language;
+                $errorMsg   = $app['i18n']['errors']['cannot_export_project'] . ': ' . $language;
             endif;
 
         endforeach;
