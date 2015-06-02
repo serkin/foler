@@ -10,7 +10,6 @@ class Response {
     public static function sendResponse($response) {
         header('Content-Type: application/json');
         echo json_encode($response);
-        die();
     }
 
     public static function responseWithError($message) {
