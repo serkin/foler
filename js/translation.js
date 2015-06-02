@@ -17,7 +17,7 @@ var translation = {
         var data = (code !== "undefined") ? {code: code, id_project:idSelectedProject} : {id_project:idSelectedProject};
 
         sendRequest('translation/getone', data, function(response){
-            
+
             response.data.id_project = idSelectedProject;
 
             var template = $('#translationFormTemplate').html();

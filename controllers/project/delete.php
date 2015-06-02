@@ -1,9 +1,9 @@
 <?php
 
 
-$app['controllers']['project/delete'] = function ($app, $request) {
+$app['controllers']['project/delete'] = function($app, $request) {
 
-    $idProject = !empty($request['id_project']) ? (int) $request['id_project'] : null;
+    $idProject = !empty($request['id_project']) ? (int)$request['id_project'] : null;
 
     if (empty($idProject)):
         $result     = false;

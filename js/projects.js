@@ -40,8 +40,8 @@ var projects = {
         });
         ev.stopPropagation();
     },
-    
-    
+
+
     ProjectForm: {
         save: function(){
             var data = $('#projectForm').serialize();
