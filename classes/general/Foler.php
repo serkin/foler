@@ -235,25 +235,25 @@ class Foler
     {
         $languages = $this->getLanguagesFromProject($idProject);
 
-        foreach ($languages as $language):
+        foreach ($languages as $language) {
 
-            if (isset($arr[$language])):
+            if (isset($arr[$language])) {
                 $value = !empty($arr[$language]) ? $arr[$language] : '';
 
-        $sth = $this->dbh->prepare('INSERT INTO `translation` (`id_project`, `code`, `language`, `translation`) VALUES(?, ?, ?, ?)'
-                        .'ON DUPLICATE KEY UPDATE `translation` = ?');
+                $sth = $this->dbh->prepare('INSERT INTO `translation` (`id_project`, `code`, `language`, `translation`) VALUES(?, ?, ?, ?)'
+                                .'ON DUPLICATE KEY UPDATE `translation` = ?');
 
-        $sth->bindParam(1, $idProject,  PDO::PARAM_INT);
-        $sth->bindParam(2, $code,       PDO::PARAM_STR);
-        $sth->bindParam(3, $language,   PDO::PARAM_STR);
-        $sth->bindParam(4, $value,      PDO::PARAM_STR);
-        $sth->bindParam(5, $value,      PDO::PARAM_STR);
+                $sth->bindParam(1, $idProject, PDO::PARAM_INT);
+                $sth->bindParam(2, $code, PDO::PARAM_STR);
+                $sth->bindParam(3, $language, PDO::PARAM_STR);
+                $sth->bindParam(4, $value, PDO::PARAM_STR);
+                $sth->bindParam(5, $value, PDO::PARAM_STR);
 
-        if ($sth->execute() === false):
+                if ($sth->execute() === false) {
                     return false;
-        endif;
-        endif;
-        endforeach;
+                }
+            }
+        }
 
         return true;
     }

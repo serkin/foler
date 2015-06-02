@@ -45,7 +45,7 @@ class PHPExport implements ExportInterface
         $file = $directory . DIRECTORY_SEPARATOR . $language . '.php';
 
         $fp = fopen($file, 'w');
-        fwrite($fp, '<?php return '.var_export($arr, true).';');
+        fwrite($fp, '<?php return ' . var_export($arr, true) . ';');
 
         fclose($fp);
     }
@@ -1624,25 +1624,25 @@ class Foler
     {
         $languages = $this->getLanguagesFromProject($idProject);
 
-        foreach ($languages as $language):
+        foreach ($languages as $language) {
 
-            if (isset($arr[$language])):
+            if (isset($arr[$language])) {
                 $value = !empty($arr[$language]) ? $arr[$language] : '';
 
-        $sth = $this->dbh->prepare('INSERT INTO `translation` (`id_project`, `code`, `language`, `translation`) VALUES(?, ?, ?, ?)'
-                        .'ON DUPLICATE KEY UPDATE `translation` = ?');
+                $sth = $this->dbh->prepare('INSERT INTO `translation` (`id_project`, `code`, `language`, `translation`) VALUES(?, ?, ?, ?)'
+                                .'ON DUPLICATE KEY UPDATE `translation` = ?');
 
-        $sth->bindParam(1, $idProject,  PDO::PARAM_INT);
-        $sth->bindParam(2, $code,       PDO::PARAM_STR);
-        $sth->bindParam(3, $language,   PDO::PARAM_STR);
-        $sth->bindParam(4, $value,      PDO::PARAM_STR);
-        $sth->bindParam(5, $value,      PDO::PARAM_STR);
+                $sth->bindParam(1, $idProject, PDO::PARAM_INT);
+                $sth->bindParam(2, $code, PDO::PARAM_STR);
+                $sth->bindParam(3, $language, PDO::PARAM_STR);
+                $sth->bindParam(4, $value, PDO::PARAM_STR);
+                $sth->bindParam(5, $value, PDO::PARAM_STR);
 
-        if ($sth->execute() === false):
+                if ($sth->execute() === false) {
                     return false;
-        endif;
-        endif;
-        endforeach;
+                }
+            }
+        }
 
         return true;
     }
@@ -1686,38 +1686,40 @@ class Foler
  *
  * @author Serkin Alexander <serkin.alexander@gmail.com>
  */
-class Response
-{
-    public static function responseWithError($message)
-    {
+class Response {
+
+    public static function sendResponse($response) {
         header('Content-Type: application/json');
-
-        $response = array(
-            'status' => array(
-                'state'     => 'notOk',
-                'message'   => $message,
-                ),
-            'data'  => array(),
-                );
-
         echo json_encode($response);
         die();
     }
 
-    public static function responseWithSuccess($arr, $statusMessage = '')
-    {
-        header('Content-Type: application/json');
+    public static function responseWithError($message) {
 
         $response = array(
             'status' => array(
-                'state'     => 'Ok',
-                'message'   => $statusMessage,
-                ),
-            'data'  => $arr,
-                );
+                'state' => 'notOk',
+                'message' => $message,
+            ),
+            'data' => array(),
+        );
 
-        echo json_encode($response);
+        self::sendResponse($response);
     }
+
+    public static function responseWithSuccess($arr, $statusMessage = '') {
+
+        $response = array(
+            'status' => array(
+                'state' => 'Ok',
+                'message' => $statusMessage,
+            ),
+            'data' => $arr,
+        );
+
+        self::sendResponse($response);
+    }
+
 }
 
 
@@ -1834,7 +1836,7 @@ $app['controllers']['project/delete'] = function($app, $request) {
 // Source: controllers/project/export.php
 
 
-$joinStringToArr = function ($string, $value, &$arr = []) {
+$joinStringToArr = function($string, $value, &$arr = []) {
 
     $keys = explode('.', $string);
 
@@ -1862,6 +1864,7 @@ $app['controllers']['project/export'] = function($app, $request) use ($joinStrin
     if (empty($project['path']) || !is_writable($directory)) {
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['project_path_not_writable'] . ': ' . $directory;
+
     } else {
 
         switch ($type) {
@@ -1871,9 +1874,6 @@ $app['controllers']['project/export'] = function($app, $request) use ($joinStrin
 
             case 'yaml':
                 $export = new YAMLExport();
-                break;
-
-            default:
                 break;
         }
 
@@ -1897,11 +1897,11 @@ $app['controllers']['project/export'] = function($app, $request) use ($joinStrin
 
 }
 
-    if ($result === true):
+    if ($result === true) {
         Response::responseWithSuccess(array(), $app['i18n']['foler']['project_exported']);
-    else:
+    } else {
         Response::responseWithError($errorMsg);
-    endif;
+    }
 
 };
 
@@ -1909,7 +1909,7 @@ $app['controllers']['project/export'] = function($app, $request) use ($joinStrin
 // Source: controllers/project/getall.php
 
 
-$app['controllers']['project/getall'] = function ($app, $request) {
+$app['controllers']['project/getall'] = function ($app) {
 
     $projects = $app['foler']->getAllProjects();
     Response::responseWithSuccess(array('projects' => $projects));
@@ -1949,7 +1949,7 @@ $isLanguagesValid =  function ($languages) {
     $uniqueArr = array();
 
     foreach (explode(',', $languages) as $value):
-        if (empty($value) || strlen($value) != 2 or isset($uniqueArr[$value])):
+        if (empty($value) || strlen($value) != 2 || isset($uniqueArr[$value])):
             $returnValue = false;
         endif;
         $uniqueArr[$value] = 1;

@@ -1,6 +1,6 @@
 <?php
 
-$joinStringToArr = function ($string, $value, &$arr = []) {
+$joinStringToArr = function($string, $value, &$arr = []) {
 
     $keys = explode('.', $string);
 
@@ -28,6 +28,7 @@ $app['controllers']['project/export'] = function($app, $request) use ($joinStrin
     if (empty($project['path']) || !is_writable($directory)) {
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['project_path_not_writable'] . ': ' . $directory;
+
     } else {
 
         switch ($type) {
@@ -37,9 +38,6 @@ $app['controllers']['project/export'] = function($app, $request) use ($joinStrin
 
             case 'yaml':
                 $export = new YAMLExport();
-                break;
-
-            default:
                 break;
         }
 
@@ -63,10 +61,10 @@ $app['controllers']['project/export'] = function($app, $request) use ($joinStrin
 
 }
 
-    if ($result === true):
+    if ($result === true) {
         Response::responseWithSuccess(array(), $app['i18n']['foler']['project_exported']);
-    else:
+    } else {
         Response::responseWithError($errorMsg);
-    endif;
+    }
 
 };

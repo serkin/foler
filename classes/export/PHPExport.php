@@ -7,7 +7,7 @@ class PHPExport implements ExportInterface
         $file = $directory . DIRECTORY_SEPARATOR . $language . '.php';
 
         $fp = fopen($file, 'w');
-        fwrite($fp, '<?php return '.var_export($arr, true).';');
+        fwrite($fp, '<?php return ' . var_export($arr, true) . ';');
 
         fclose($fp);
     }

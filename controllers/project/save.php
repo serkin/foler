@@ -11,7 +11,7 @@ $isLanguagesValid =  function ($languages) {
     $uniqueArr = array();
 
     foreach (explode(',', $languages) as $value):
-        if (empty($value) || strlen($value) != 2 or isset($uniqueArr[$value])):
+        if (empty($value) || strlen($value) != 2 || isset($uniqueArr[$value])):
             $returnValue = false;
         endif;
         $uniqueArr[$value] = 1;
