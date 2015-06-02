@@ -1,6 +1,6 @@
 <?php
 
-$isLanguagesValid =  function ($languages) {
+$isLanguagesValid =  function($languages) {
 
     $returnValue = true;
 
@@ -27,25 +27,25 @@ $app['controllers']['project/save'] = function ($app, $request) use ($isLanguage
 
     $idProject = !empty($form['id_project']) ? $form['id_project'] : null;
 
-    if (empty($form['languages']) || $isLanguagesValid($form['languages']) === false):
+    if (empty($form['languages']) || $isLanguagesValid($form['languages']) === false) {
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['not_valid_project_languages'];
-    elseif (empty($form['path'])):
+    } elseif (empty($form['path'])) {
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_project_export_path'];
-    elseif (empty($form['name'])):
+    } elseif (empty($form['name'])) {
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_project_name'];
-    else:
+    } else {
         $result     = $app['foler']->saveProject($form['name'], $form['path'], $form['languages'], $idProject);
         $error      = $app['foler']->getError();
         $errorMsg   = $error[2];
-    endif;
+    }
 
-    if ($result):
+    if ($result) {
         Response::responseWithSuccess(array('id_project' => $result), $app['i18n']['foler']['project_saved']);
-    else:
+    } else {
         Response::responseWithError($errorMsg);
-    endif;
+    }
 
 };

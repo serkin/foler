@@ -1691,7 +1691,6 @@ class Response {
     public static function sendResponse($response) {
         header('Content-Type: application/json');
         echo json_encode($response);
-        die();
     }
 
     public static function responseWithError($message) {
@@ -1768,26 +1767,26 @@ $app['i18n']['en'] = array(
 
 $app['controllers']['code/delete'] = function($app, $request) {
 
-    $idProject  = !empty($request['id_project'])    ? (int) $request['id_project']   : null;
-    $code       = !empty($request['code'])          ? $request['code']              : null;
+    $idProject  = !empty($request['id_project']) ? (int)$request['id_project'] : null;
+    $code       = !empty($request['code']) ? $request['code'] : null;
 
-    if (empty($idProject)):
+    if (empty($idProject)) {
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_id_project'];
-    elseif (empty($code)):
+    } elseif (empty($code)) {
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_code'];
-    else:
+    } else {
         $result     = $app['foler']->deleteCode($idProject, $code);
         $error      = $app['foler']->getError();
         $errorMsg   = $error[2];
-    endif;
+    }
 
-    if ($result):
+    if ($result) {
         Response::responseWithSuccess(array(), $app['i18n']['foler']['code_removed']);
-    else:
+    } else {
         Response::responseWithError($errorMsg);
-    endif;
+    }
 
 };
 
@@ -1796,10 +1795,10 @@ $app['controllers']['code/delete'] = function($app, $request) {
 
 
 
-$app['controllers']['code/search'] = function ($app, $request) {
+$app['controllers']['code/search'] = function($app, $request) {
 
-    $keyword    = !empty($request['keyword'])       ? $request['keyword']           : null;
-    $idProject  = !empty($request['id_project'])    ? (int) $request['id_project']   : null;
+    $keyword    = !empty($request['keyword']) ? $request['keyword'] : null;
+    $idProject  = !empty($request['id_project']) ? (int)$request['id_project'] : null;
 
     $codes = $app['foler']->getAllCodes($idProject, $keyword);
     Response::responseWithSuccess(array('codes' => $codes));
@@ -1815,20 +1814,20 @@ $app['controllers']['project/delete'] = function($app, $request) {
 
     $idProject = !empty($request['id_project']) ? (int)$request['id_project'] : null;
 
-    if (empty($idProject)):
+    if (empty($idProject)) {
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_id_project'];
-    else:
+    } else {
         $result     = $app['foler']->deleteProject($idProject);
         $error      = $app['foler']->getError();
         $errorMsg   = $error[2];
-    endif;
+    }
 
-    if ($result):
+    if ($result) {
         Response::responseWithSuccess(array(), $app['i18n']['foler']['project_removed']);
-    else:
+    } else {
         Response::responseWithError($errorMsg);
-    endif;
+    }
 
 };
 
@@ -1909,7 +1908,7 @@ $app['controllers']['project/export'] = function($app, $request) use ($joinStrin
 // Source: controllers/project/getall.php
 
 
-$app['controllers']['project/getall'] = function ($app) {
+$app['controllers']['project/getall'] = function($app) {
 
     $projects = $app['foler']->getAllProjects();
     Response::responseWithSuccess(array('projects' => $projects));
@@ -1921,16 +1920,16 @@ $app['controllers']['project/getall'] = function ($app) {
 
 
 
-$app['controllers']['project/getone'] = function ($app, $request) {
+$app['controllers']['project/getone'] = function($app, $request) {
 
-    $idProject = !empty($request['id_project']) ? (int) $request['id_project'] : null;
+    $idProject = !empty($request['id_project']) ? (int)$request['id_project'] : null;
 
-    if (!is_null($idProject)):
+    if (!is_null($idProject)) {
         $project = $app['foler']->getProjectByID($idProject);
         Response::responseWithSuccess(array('project' => $project));
-    else:
+    } else {
         Response::responseWithError($app['i18n']['errors']['empty_id_project']);
-    endif;
+    }
 
 };
 
@@ -1938,7 +1937,7 @@ $app['controllers']['project/getone'] = function ($app, $request) {
 // Source: controllers/project/save.php
 
 
-$isLanguagesValid =  function ($languages) {
+$isLanguagesValid =  function($languages) {
 
     $returnValue = true;
 
@@ -1965,26 +1964,26 @@ $app['controllers']['project/save'] = function ($app, $request) use ($isLanguage
 
     $idProject = !empty($form['id_project']) ? $form['id_project'] : null;
 
-    if (empty($form['languages']) || $isLanguagesValid($form['languages']) === false):
+    if (empty($form['languages']) || $isLanguagesValid($form['languages']) === false) {
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['not_valid_project_languages'];
-    elseif (empty($form['path'])):
+    } elseif (empty($form['path'])) {
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_project_export_path'];
-    elseif (empty($form['name'])):
+    } elseif (empty($form['name'])) {
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_project_name'];
-    else:
+    } else {
         $result     = $app['foler']->saveProject($form['name'], $form['path'], $form['languages'], $idProject);
         $error      = $app['foler']->getError();
         $errorMsg   = $error[2];
-    endif;
+    }
 
-    if ($result):
+    if ($result) {
         Response::responseWithSuccess(array('id_project' => $result), $app['i18n']['foler']['project_saved']);
-    else:
+    } else {
         Response::responseWithError($errorMsg);
-    endif;
+    }
 
 };
 
@@ -1993,10 +1992,10 @@ $app['controllers']['project/save'] = function ($app, $request) use ($isLanguage
 
 
 
-$app['controllers']['translation/getone'] = function ($app, $request) {
+$app['controllers']['translation/getone'] = function($app, $request) {
 
-    $code       = !empty($request['code'])          ? $request['code']              : null;
-    $idProject  = !empty($request['id_project'])    ? (int) $request['id_project']   : null;
+    $code       = !empty($request['code']) ? $request['code'] : null;
+    $idProject  = !empty($request['id_project']) ? (int)$request['id_project'] : null;
 
     $result = $app['foler']->getTranslation($idProject, $code);
     Response::responseWithSuccess($result);
