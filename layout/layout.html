@@ -12,7 +12,7 @@
             table {
                 border: #cecece 1px solid;
             }
-            
+
             .selected_project {
                 background-color: #cecece;
             }
@@ -79,13 +79,13 @@
                                     <td><button class="btn btn-danger btn-xs" OnClick="projects.deleteProject({{id_project}})"><?php echo $i18n['layout']['delete']; ?></button></td>
                                 </tr>
                             {{/projects}}
-                                    
+
                             {{^projects}}
                                 <tr>
                                     <td colspan="4">{{i18n.no_projects}}</td>
                                 </tr>
                             {{/projects}}
-                            
+
                         </tbody>
                     </table>
                 </script>
@@ -98,7 +98,7 @@
                         {{#id_project}}
                             <input type="hidden" name="id_project" value="{{id_project}}">
                         {{/id_project}}
-            
+
                     <div class="form-group">
                         <label class="col-sm-6 control-label"><?php echo $i18n['layout']['name']; ?></label>
                         <div class="col-sm-6">
@@ -180,7 +180,7 @@
                 </script>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-md-12">
                 <hr>

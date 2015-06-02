@@ -3,7 +3,7 @@
 
 class FolerTest extends PHPUnit_Framework_TestCase
 {
-    
+
     public function setUp()
     {
         parent::setUp();
@@ -13,13 +13,13 @@ class FolerTest extends PHPUnit_Framework_TestCase
     {
 
         require dirname(dirname(__DIR__)) . '/classes/general/Foler.php';
-        
+
         $arr = [
             'name'      => 'project 1',
             'path'      => 'path',
             'languages' => 'ru,en'
         ];
-        
+
         $foler = new Foler($GLOBALS['db_dsn'], $GLOBALS['db_user'], $GLOBALS['db_password']);
         $foler->connect();
         $id = $foler->saveProject($arr['name'], $arr['path'], $arr['languages']);
@@ -29,8 +29,8 @@ class FolerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($project['name'], $arr['name']);
         $this->assertEquals($project['path'], $arr['path']);
         $this->assertEquals($project['languages'], $arr['languages']);
-        
-        
+
+
         // Test update project
 
     }

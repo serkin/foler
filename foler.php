@@ -18,33 +18,11 @@ $app['config'] = [
 
 if($app['config']['debug']):
     error_reporting(E_ALL);
-    ini_set('display_errors', 1);
 endif;
 
 
 $app['locale'] = 'en';
 
-
-/**
- * Helps us split codes to associative array
- * 
- * @param type $string
- * @param type $value
- * @param array $arr
- */
-function joinStringToArr($string, $value, &$arr = []) {
-    
-    $keys = explode('.', $string);
-
-    $ref = &$arr;
-
-    while ($key = array_shift($keys)) {
-        $ref = &$ref[$key];
-    }
-
-    $ref = $value;
-
-}
 
 
 // Source: classes/export/ExportInterface.php
@@ -53,95 +31,105 @@ function joinStringToArr($string, $value, &$arr = []) {
 
 interface ExportInterface
 {
-    
     public function export($arr, $directory, $language);
 }
+
 
 // Source: classes/export/PHPExport.php
 
 
-
-class PHPExport implements ExportInterface {
-    
-
+class PHPExport implements ExportInterface
+{
     public function export($arr, $directory, $language)
     {
-        
         $file = $directory . DIRECTORY_SEPARATOR . $language . '.php';
-        //return file_get_contents($file, '<?php return '.var_export($arr, true).';');
-        
-        $fp = fopen($file, 'w');
-fwrite($fp, '<?php return '.var_export($arr, true).';');
 
-fclose($fp);
+        $fp = fopen($file, 'w');
+        fwrite($fp, '<?php return '.var_export($arr, true).';');
+
+        fclose($fp);
     }
 }
 
+
 // Source: classes/export/Spyc.php
 
+
 /**
-   * Spyc -- A Simple PHP YAML Class
-   * @version 0.5.1
-   * @author Vlad Andersen <vlad.andersen@gmail.com>
-   * @author Chris Wanstrath <chris@ozmm.org>
-   * @link https://github.com/mustangostang/spyc/
-   * @copyright Copyright 2005-2006 Chris Wanstrath, 2006-2011 Vlad Andersen
-   * @license http://www.opensource.org/licenses/mit-license.php MIT License
-   * @package Spyc
-   */
+ * Spyc -- A Simple PHP YAML Class.
+ *
+ * @version 0.5.1
+ *
+ * @author Vlad Andersen <vlad.andersen@gmail.com>
+ * @author Chris Wanstrath <chris@ozmm.org>
+ *
+ * @link https://github.com/mustangostang/spyc/
+ *
+ * @copyright Copyright 2005-2006 Chris Wanstrath, 2006-2011 Vlad Andersen
+ * @license http://www.opensource.org/licenses/mit-license.php MIT License
+ */
 if (!function_exists('spyc_load')) {
-  /**
+    /**
    * Parses YAML to array.
+   *
    * @param string $string YAML string.
+   *
    * @return array
    */
-  function spyc_load ($string) {
-    return Spyc::YAMLLoadString($string);
+  function spyc_load($string)
+  {
+      return Spyc::YAMLLoadString($string);
   }
 }
 if (!function_exists('spyc_load_file')) {
-  /**
+    /**
    * Parses YAML to array.
+   *
    * @param string $file Path to YAML file.
+   *
    * @return array
    */
-  function spyc_load_file ($file) {
-    return Spyc::YAMLLoad($file);
+  function spyc_load_file($file)
+  {
+      return Spyc::YAMLLoad($file);
   }
 }
 if (!function_exists('spyc_dump')) {
-  /**
+    /**
    * Dumps array to YAML.
+   *
    * @param array $data Array.
+   *
    * @return string
    */
-  function spyc_dump ($data) {
-    return Spyc::YAMLDump($data, false, false, true);
+  function spyc_dump($data)
+  {
+      return Spyc::YAMLDump($data, false, false, true);
   }
 }
 /**
-   * The Simple PHP YAML Class.
-   *
-   * This class can be used to read a YAML file and convert its contents
-   * into a PHP array.  It currently supports a very limited subsection of
-   * the YAML spec.
-   *
-   * Usage:
-   * <code>
-   *   $Spyc  = new Spyc;
-   *   $array = $Spyc->load($file);
-   * </code>
-   * or:
-   * <code>
-   *   $array = Spyc::YAMLLoad($file);
-   * </code>
-   * or:
-   * <code>
-   *   $array = spyc_load_file($file);
-   * </code>
-   * @package Spyc
-   */
-class Spyc {
+ * The Simple PHP YAML Class.
+ *
+ * This class can be used to read a YAML file and convert its contents
+ * into a PHP array.  It currently supports a very limited subsection of
+ * the YAML spec.
+ *
+ * Usage:
+ * <code>
+ *   $Spyc  = new Spyc;
+ *   $array = $Spyc->load($file);
+ * </code>
+ * or:
+ * <code>
+ *   $array = Spyc::YAMLLoad($file);
+ * </code>
+ * or:
+ * <code>
+ *   $array = spyc_load_file($file);
+ * </code>
+ */
+class Spyc
+{
   // SETTINGS
   const REMPTY = "\0\0\0\0\0";
   /**
@@ -154,6 +142,7 @@ class Spyc {
   /**
    * Setting this to true will forse YAMLLoad to use syck_load function when
    * possible. False by default.
+   *
    * @var bool
    */
   public $setting_use_syck_is_possible = false;
@@ -162,16 +151,17 @@ class Spyc {
   * @var mixed
   */
   private $_dumpIndent;
-  private $_dumpWordWrap;
-  private $_containsGroupAnchor = false;
-  private $_containsGroupAlias = false;
-  private $path;
-  private $result;
-  private $LiteralPlaceHolder = '___YAML_Literal_Block___';
-  private $SavedGroups = array();
-  private $indent;
+    private $_dumpWordWrap;
+    private $_containsGroupAnchor = false;
+    private $_containsGroupAlias = false;
+    private $path;
+    private $result;
+    private $LiteralPlaceHolder = '___YAML_Literal_Block___';
+    private $SavedGroups = array();
+    private $indent;
   /**
    * Path modifier that should be applied after adding current element.
+   *
    * @var array
    */
   private $delayedPath = array();
@@ -180,907 +170,1221 @@ class Spyc {
   * @var mixed
   */
   public $_nodeId;
-/**
- * Load a valid YAML string to Spyc.
- * @param string $input
- * @return array
- */
-  public function load ($input) {
-    return $this->__loadString($input);
-  }
- /**
- * Load a valid YAML file to Spyc.
- * @param string $file
- * @return array
- */
-  public function loadFile ($file) {
-    return $this->__load($file);
+  /**
+   * Load a valid YAML string to Spyc.
+   *
+   * @param string $input
+   *
+   * @return array
+   */
+  public function load($input)
+  {
+      return $this->__loadString($input);
   }
   /**
-     * Load YAML into a PHP array statically
-     *
-     * The load method, when supplied with a YAML stream (string or file),
-     * will do its best to convert YAML in a file into a PHP array.  Pretty
-     * simple.
-     *  Usage:
-     *  <code>
-     *   $array = Spyc::YAMLLoad('lucky.yaml');
-     *   print_r($array);
-     *  </code>
-     * @access public
-     * @return array
-     * @param string $input Path of YAML file or string containing YAML
-     */
-  public static function YAMLLoad($input) {
-    $Spyc = new Spyc;
-    return $Spyc->__load($input);
+   * Load a valid YAML file to Spyc.
+   *
+   * @param string $file
+   *
+   * @return array
+   */
+  public function loadFile($file)
+  {
+      return $this->__load($file);
   }
   /**
-     * Load a string of YAML into a PHP array statically
-     *
-     * The load method, when supplied with a YAML string, will do its best
-     * to convert YAML in a string into a PHP array.  Pretty simple.
-     *
-     * Note: use this function if you don't want files from the file system
-     * loaded and processed as YAML.  This is of interest to people concerned
-     * about security whose input is from a string.
-     *
-     *  Usage:
-     *  <code>
-     *   $array = Spyc::YAMLLoadString("---\n0: hello world\n");
-     *   print_r($array);
-     *  </code>
-     * @access public
-     * @return array
-     * @param string $input String containing YAML
-     */
-  public static function YAMLLoadString($input) {
-    $Spyc = new Spyc;
-    return $Spyc->__loadString($input);
+   * Load YAML into a PHP array statically.
+   *
+   * The load method, when supplied with a YAML stream (string or file),
+   * will do its best to convert YAML in a file into a PHP array.  Pretty
+   * simple.
+   *  Usage:
+   *  <code>
+   *   $array = Spyc::YAMLLoad('lucky.yaml');
+   *   print_r($array);
+   *  </code>
+   *
+   * @access public
+   *
+   * @return array
+   *
+   * @param string $input Path of YAML file or string containing YAML
+   */
+  public static function YAMLLoad($input)
+  {
+      $Spyc = new Spyc();
+
+      return $Spyc->__load($input);
   }
   /**
-     * Dump YAML from PHP array statically
-     *
-     * The dump method, when supplied with an array, will do its best
-     * to convert the array into friendly YAML.  Pretty simple.  Feel free to
-     * save the returned string as nothing.yaml and pass it around.
-     *
-     * Oh, and you can decide how big the indent is and what the wordwrap
-     * for folding is.  Pretty cool -- just pass in 'false' for either if
-     * you want to use the default.
-     *
-     * Indent's default is 2 spaces, wordwrap's default is 40 characters.  And
-     * you can turn off wordwrap by passing in 0.
-     *
-     * @access public
-     * @return string
-     * @param array $array PHP array
-     * @param int $indent Pass in false to use the default, which is 2
-     * @param int $wordwrap Pass in 0 for no wordwrap, false for default (40)
-     * @param int $no_opening_dashes Do not start YAML file with "---\n"
-     */
-  public static function YAMLDump($array, $indent = false, $wordwrap = false, $no_opening_dashes = false) {
-    $spyc = new Spyc;
-    return $spyc->dump($array, $indent, $wordwrap, $no_opening_dashes);
+   * Load a string of YAML into a PHP array statically.
+   *
+   * The load method, when supplied with a YAML string, will do its best
+   * to convert YAML in a string into a PHP array.  Pretty simple.
+   *
+   * Note: use this function if you don't want files from the file system
+   * loaded and processed as YAML.  This is of interest to people concerned
+   * about security whose input is from a string.
+   *
+   *  Usage:
+   *  <code>
+   *   $array = Spyc::YAMLLoadString("---\n0: hello world\n");
+   *   print_r($array);
+   *  </code>
+   *
+   * @access public
+   *
+   * @return array
+   *
+   * @param string $input String containing YAML
+   */
+  public static function YAMLLoadString($input)
+  {
+      $Spyc = new Spyc();
+
+      return $Spyc->__loadString($input);
   }
   /**
-     * Dump PHP array to YAML
-     *
-     * The dump method, when supplied with an array, will do its best
-     * to convert the array into friendly YAML.  Pretty simple.  Feel free to
-     * save the returned string as tasteful.yaml and pass it around.
-     *
-     * Oh, and you can decide how big the indent is and what the wordwrap
-     * for folding is.  Pretty cool -- just pass in 'false' for either if
-     * you want to use the default.
-     *
-     * Indent's default is 2 spaces, wordwrap's default is 40 characters.  And
-     * you can turn off wordwrap by passing in 0.
-     *
-     * @access public
-     * @return string
-     * @param array $array PHP array
-     * @param int $indent Pass in false to use the default, which is 2
-     * @param int $wordwrap Pass in 0 for no wordwrap, false for default (40)
-     */
-  public function dump($array,$indent = false,$wordwrap = false, $no_opening_dashes = false) {
-    // Dumps to some very clean YAML.  We'll have to add some more features
+   * Dump YAML from PHP array statically.
+   *
+   * The dump method, when supplied with an array, will do its best
+   * to convert the array into friendly YAML.  Pretty simple.  Feel free to
+   * save the returned string as nothing.yaml and pass it around.
+   *
+   * Oh, and you can decide how big the indent is and what the wordwrap
+   * for folding is.  Pretty cool -- just pass in 'false' for either if
+   * you want to use the default.
+   *
+   * Indent's default is 2 spaces, wordwrap's default is 40 characters.  And
+   * you can turn off wordwrap by passing in 0.
+   *
+   * @access public
+   *
+   * @return string
+   *
+   * @param array $array PHP array
+   * @param int $indent Pass in false to use the default, which is 2
+   * @param int $wordwrap Pass in 0 for no wordwrap, false for default (40)
+   * @param int $no_opening_dashes Do not start YAML file with "---\n"
+   */
+  public static function YAMLDump($array, $indent = false, $wordwrap = false, $no_opening_dashes = false)
+  {
+      $spyc = new Spyc();
+
+      return $spyc->dump($array, $indent, $wordwrap, $no_opening_dashes);
+  }
+  /**
+   * Dump PHP array to YAML.
+   *
+   * The dump method, when supplied with an array, will do its best
+   * to convert the array into friendly YAML.  Pretty simple.  Feel free to
+   * save the returned string as tasteful.yaml and pass it around.
+   *
+   * Oh, and you can decide how big the indent is and what the wordwrap
+   * for folding is.  Pretty cool -- just pass in 'false' for either if
+   * you want to use the default.
+   *
+   * Indent's default is 2 spaces, wordwrap's default is 40 characters.  And
+   * you can turn off wordwrap by passing in 0.
+   *
+   * @access public
+   *
+   * @return string
+   *
+   * @param array $array PHP array
+   * @param int $indent Pass in false to use the default, which is 2
+   * @param int $wordwrap Pass in 0 for no wordwrap, false for default (40)
+   */
+  public function dump($array, $indent = false, $wordwrap = false, $no_opening_dashes = false)
+  {
+      // Dumps to some very clean YAML.  We'll have to add some more features
     // and options soon.  And better support for folding.
     // New features and options.
     if ($indent === false or !is_numeric($indent)) {
-      $this->_dumpIndent = 2;
+        $this->_dumpIndent = 2;
     } else {
-      $this->_dumpIndent = $indent;
+        $this->_dumpIndent = $indent;
     }
-    if ($wordwrap === false or !is_numeric($wordwrap)) {
-      $this->_dumpWordWrap = 40;
-    } else {
-      $this->_dumpWordWrap = $wordwrap;
-    }
+      if ($wordwrap === false or !is_numeric($wordwrap)) {
+          $this->_dumpWordWrap = 40;
+      } else {
+          $this->_dumpWordWrap = $wordwrap;
+      }
     // New YAML document
-    $string = "";
-    if (!$no_opening_dashes) $string = "---\n";
+    $string = '';
+      if (!$no_opening_dashes) {
+          $string = "---\n";
+      }
     // Start at the base of the array and move through it.
     if ($array) {
-      $array = (array)$array;
-      $previous_key = -1;
-      foreach ($array as $key => $value) {
-        if (!isset($first_key)) $first_key = $key;
-        $string .= $this->_yamlize($key,$value,0,$previous_key, $first_key, $array);
-        $previous_key = $key;
-      }
+        $array = (array) $array;
+        $previous_key = -1;
+        foreach ($array as $key => $value) {
+            if (!isset($first_key)) {
+                $first_key = $key;
+            }
+            $string .= $this->_yamlize($key, $value, 0, $previous_key, $first_key, $array);
+            $previous_key = $key;
+        }
     }
-    return $string;
+
+      return $string;
   }
   /**
-     * Attempts to convert a key / value array item to YAML
-     * @access private
-     * @return string
-     * @param $key The name of the key
-     * @param $value The value of the item
-     * @param $indent The indent of the current node
-     */
-  private function _yamlize($key,$value,$indent, $previous_key = -1, $first_key = 0, $source_array = null) {
-    if (is_array($value)) {
-      if (empty ($value))
-        return $this->_dumpNode($key, array(), $indent, $previous_key, $first_key, $source_array);
+   * Attempts to convert a key / value array item to YAML.
+   *
+   * @access private
+   *
+   * @return string
+   *
+   * @param $key The name of the key
+   * @param $value The value of the item
+   * @param $indent The indent of the current node
+   */
+  private function _yamlize($key, $value, $indent, $previous_key = -1, $first_key = 0, $source_array = null)
+  {
+      if (is_array($value)) {
+          if (empty($value)) {
+              return $this->_dumpNode($key, array(), $indent, $previous_key, $first_key, $source_array);
+          }
       // It has children.  What to do?
       // Make it the right kind of item
       $string = $this->_dumpNode($key, self::REMPTY, $indent, $previous_key, $first_key, $source_array);
       // Add the indent
       $indent += $this->_dumpIndent;
       // Yamlize the array
-      $string .= $this->_yamlizeArray($value,$indent);
-    } elseif (!is_array($value)) {
-      // It doesn't have children.  Yip.
+      $string .= $this->_yamlizeArray($value, $indent);
+      } elseif (!is_array($value)) {
+          // It doesn't have children.  Yip.
       $string = $this->_dumpNode($key, $value, $indent, $previous_key, $first_key, $source_array);
-    }
-    return $string;
-  }
-  /**
-     * Attempts to convert an array to YAML
-     * @access private
-     * @return string
-     * @param $array The array you want to convert
-     * @param $indent The indent of the current level
-     */
-  private function _yamlizeArray($array,$indent) {
-    if (is_array($array)) {
-      $string = '';
-      $previous_key = -1;
-      foreach ($array as $key => $value) {
-        if (!isset($first_key)) $first_key = $key;
-        $string .= $this->_yamlize($key, $value, $indent, $previous_key, $first_key, $array);
-        $previous_key = $key;
       }
+
       return $string;
-    } else {
-      return false;
-    }
   }
   /**
-     * Returns YAML from a key and a value
-     * @access private
-     * @return string
-     * @param $key The name of the key
-     * @param $value The value of the item
-     * @param $indent The indent of the current node
-     */
-  private function _dumpNode($key, $value, $indent, $previous_key = -1, $first_key = 0, $source_array = null) {
-    // do some folding here, for blocks
-    if (is_string ($value) && ((strpos($value,"\n") !== false || strpos($value,": ") !== false || strpos($value,"- ") !== false ||
-      strpos($value,"*") !== false || strpos($value,"#") !== false || strpos($value,"<") !== false || strpos($value,">") !== false || strpos ($value, '  ') !== false ||
-      strpos($value,"[") !== false || strpos($value,"]") !== false || strpos($value,"{") !== false || strpos($value,"}") !== false) || strpos($value,"&") !== false || strpos($value, "'") !== false || strpos($value, "!") === 0 ||
-      substr ($value, -1, 1) == ':')
+   * Attempts to convert an array to YAML.
+   *
+   * @access private
+   *
+   * @return string
+   *
+   * @param $array The array you want to convert
+   * @param $indent The indent of the current level
+   */
+  private function _yamlizeArray($array, $indent)
+  {
+      if (is_array($array)) {
+          $string = '';
+          $previous_key = -1;
+          foreach ($array as $key => $value) {
+              if (!isset($first_key)) {
+                  $first_key = $key;
+              }
+              $string .= $this->_yamlize($key, $value, $indent, $previous_key, $first_key, $array);
+              $previous_key = $key;
+          }
+
+          return $string;
+      } else {
+          return false;
+      }
+  }
+  /**
+   * Returns YAML from a key and a value.
+   *
+   * @access private
+   *
+   * @return string
+   *
+   * @param $key The name of the key
+   * @param $value The value of the item
+   * @param $indent The indent of the current node
+   */
+  private function _dumpNode($key, $value, $indent, $previous_key = -1, $first_key = 0, $source_array = null)
+  {
+      // do some folding here, for blocks
+    if (is_string($value) && ((strpos($value, "\n") !== false || strpos($value, ': ') !== false || strpos($value, '- ') !== false ||
+      strpos($value, '*') !== false || strpos($value, '#') !== false || strpos($value, '<') !== false || strpos($value, '>') !== false || strpos($value, '  ') !== false ||
+      strpos($value, '[') !== false || strpos($value, ']') !== false || strpos($value, '{') !== false || strpos($value, '}') !== false) || strpos($value, '&') !== false || strpos($value, "'") !== false || strpos($value, '!') === 0 ||
+      substr($value, -1, 1) == ':')
     ) {
-      $value = $this->_doLiteralBlock($value,$indent);
+        $value = $this->_doLiteralBlock($value, $indent);
     } else {
-      $value  = $this->_doFolding($value,$indent);
+        $value  = $this->_doFolding($value, $indent);
     }
-    if ($value === array()) $value = '[ ]';
-    if ($value === "") $value = '""';
-    if (self::isTranslationWord($value)) {
-      $value = $this->_doLiteralBlock($value, $indent);
-    }
-    if (trim ($value) != $value)
-       $value = $this->_doLiteralBlock($value,$indent);
-    if (is_bool($value)) {
-       $value = $value ? "true" : "false";
-    }
-    if ($value === null) $value = 'null';
-    if ($value === "'" . self::REMPTY . "'") $value = null;
-    $spaces = str_repeat(' ',$indent);
+      if ($value === array()) {
+          $value = '[ ]';
+      }
+      if ($value === '') {
+          $value = '""';
+      }
+      if (self::isTranslationWord($value)) {
+          $value = $this->_doLiteralBlock($value, $indent);
+      }
+      if (trim($value) != $value) {
+          $value = $this->_doLiteralBlock($value, $indent);
+      }
+      if (is_bool($value)) {
+          $value = $value ? 'true' : 'false';
+      }
+      if ($value === null) {
+          $value = 'null';
+      }
+      if ($value === "'".self::REMPTY."'") {
+          $value = null;
+      }
+      $spaces = str_repeat(' ', $indent);
     //if (is_int($key) && $key - 1 == $previous_key && $first_key===0) {
-    if (is_array ($source_array) && array_keys($source_array) === range(0, count($source_array) - 1)) {
-      // It's a sequence
+    if (is_array($source_array) && array_keys($source_array) === range(0, count($source_array) - 1)) {
+        // It's a sequence
       $string = $spaces.'- '.$value."\n";
     } else {
-      // if ($first_key===0)  throw new Exception('Keys are all screwy.  The first one was zero, now it\'s "'. $key .'"');
+        // if ($first_key===0)  throw new Exception('Keys are all screwy.  The first one was zero, now it\'s "'. $key .'"');
       // It's mapped
-      if (strpos($key, ":") !== false || strpos($key, "#") !== false) { $key = '"' . $key . '"'; }
-      $string = rtrim ($spaces.$key.': '.$value)."\n";
+      if (strpos($key, ':') !== false || strpos($key, '#') !== false) {
+          $key = '"'.$key.'"';
+      }
+        $string = rtrim($spaces.$key.': '.$value)."\n";
     }
-    return $string;
+
+      return $string;
   }
   /**
-     * Creates a literal block for dumping
-     * @access private
-     * @return string
-     * @param $value
-     * @param $indent int The value of the indent
-     */
-  private function _doLiteralBlock($value,$indent) {
-    if ($value === "\n") return '\n';
-    if (strpos($value, "\n") === false && strpos($value, "'") === false) {
-      return sprintf ("'%s'", $value);
-    }
-    if (strpos($value, "\n") === false && strpos($value, '"') === false) {
-      return sprintf ('"%s"', $value);
-    }
-    $exploded = explode("\n",$value);
-    $newValue = '|';
-    $indent  += $this->_dumpIndent;
-    $spaces   = str_repeat(' ',$indent);
-    foreach ($exploded as $line) {
-      $newValue .= "\n" . $spaces . ($line);
-    }
-    return $newValue;
+   * Creates a literal block for dumping.
+   *
+   * @access private
+   *
+   * @return string
+   *
+   * @param $value
+   * @param $indent int The value of the indent
+   */
+  private function _doLiteralBlock($value, $indent)
+  {
+      if ($value === "\n") {
+          return '\n';
+      }
+      if (strpos($value, "\n") === false && strpos($value, "'") === false) {
+          return sprintf("'%s'", $value);
+      }
+      if (strpos($value, "\n") === false && strpos($value, '"') === false) {
+          return sprintf('"%s"', $value);
+      }
+      $exploded = explode("\n", $value);
+      $newValue = '|';
+      $indent  += $this->_dumpIndent;
+      $spaces   = str_repeat(' ', $indent);
+      foreach ($exploded as $line) {
+          $newValue .= "\n".$spaces.($line);
+      }
+
+      return $newValue;
   }
   /**
-     * Folds a string of text, if necessary
-     * @access private
-     * @return string
-     * @param $value The string you wish to fold
-     */
-  private function _doFolding($value,$indent) {
-    // Don't do anything if wordwrap is set to 0
-    if ($this->_dumpWordWrap !== 0 && is_string ($value) && strlen($value) > $this->_dumpWordWrap) {
-      $indent += $this->_dumpIndent;
-      $indent = str_repeat(' ',$indent);
-      $wrapped = wordwrap($value,$this->_dumpWordWrap,"\n$indent");
-      $value   = ">\n".$indent.$wrapped;
+   * Folds a string of text, if necessary.
+   *
+   * @access private
+   *
+   * @return string
+   *
+   * @param $value The string you wish to fold
+   */
+  private function _doFolding($value, $indent)
+  {
+      // Don't do anything if wordwrap is set to 0
+    if ($this->_dumpWordWrap !== 0 && is_string($value) && strlen($value) > $this->_dumpWordWrap) {
+        $indent += $this->_dumpIndent;
+        $indent = str_repeat(' ', $indent);
+        $wrapped = wordwrap($value, $this->_dumpWordWrap, "\n$indent");
+        $value   = ">\n".$indent.$wrapped;
     } else {
-      if ($this->setting_dump_force_quotes && is_string ($value) && $value !== self::REMPTY)
-        $value = '"' . $value . '"';
-      if (is_numeric($value) && is_string($value))
-        $value = '"' . $value . '"';
+        if ($this->setting_dump_force_quotes && is_string($value) && $value !== self::REMPTY) {
+            $value = '"'.$value.'"';
+        }
+        if (is_numeric($value) && is_string($value)) {
+            $value = '"'.$value.'"';
+        }
     }
-    return $value;
+
+      return $value;
   }
-  private function isTrueWord($value) {
-    $words = self::getTranslations(array('true', 'on', 'yes', 'y'));
-    return in_array($value, $words, true);
-  }
-  private function isFalseWord($value) {
-    $words = self::getTranslations(array('false', 'off', 'no', 'n'));
-    return in_array($value, $words, true);
-  }
-  private function isNullWord($value) {
-    $words = self::getTranslations(array('null', '~'));
-    return in_array($value, $words, true);
-  }
-  private function isTranslationWord($value) {
-    return (
+    private function isTrueWord($value)
+    {
+        $words = self::getTranslations(array('true', 'on', 'yes', 'y'));
+
+        return in_array($value, $words, true);
+    }
+    private function isFalseWord($value)
+    {
+        $words = self::getTranslations(array('false', 'off', 'no', 'n'));
+
+        return in_array($value, $words, true);
+    }
+    private function isNullWord($value)
+    {
+        $words = self::getTranslations(array('null', '~'));
+
+        return in_array($value, $words, true);
+    }
+    private function isTranslationWord($value)
+    {
+        return (
       self::isTrueWord($value)  ||
       self::isFalseWord($value) ||
       self::isNullWord($value)
     );
+    }
+  /**
+   * Coerce a string into a native type
+   * Reference: http://yaml.org/type/bool.html
+   * TODO: Use only words from the YAML spec.
+   *
+   * @access private
+   *
+   * @param $value The value to coerce
+   */
+  private function coerceValue(&$value)
+  {
+      if (self::isTrueWord($value)) {
+          $value = true;
+      } elseif (self::isFalseWord($value)) {
+          $value = false;
+      } elseif (self::isNullWord($value)) {
+          $value = null;
+      }
   }
   /**
-     * Coerce a string into a native type
-     * Reference: http://yaml.org/type/bool.html
-     * TODO: Use only words from the YAML spec.
-     * @access private
-     * @param $value The value to coerce
-     */
-  private function coerceValue(&$value) {
-    if (self::isTrueWord($value)) {
-      $value = true;
-    } else if (self::isFalseWord($value)) {
-      $value = false;
-    } else if (self::isNullWord($value)) {
-      $value = null;
-    }
-  }
-  /**
-     * Given a set of words, perform the appropriate translations on them to
-     * match the YAML 1.1 specification for type coercing.
-     * @param $words The words to translate
-     * @access private
-     */
-  private static function getTranslations(array $words) {
-    $result = array();
-    foreach ($words as $i) {
-      $result = array_merge($result, array(ucfirst($i), strtoupper($i), strtolower($i)));
-    }
-    return $result;
+   * Given a set of words, perform the appropriate translations on them to
+   * match the YAML 1.1 specification for type coercing.
+   *
+   * @param $words The words to translate
+   * @access private
+   */
+  private static function getTranslations(array $words)
+  {
+      $result = array();
+      foreach ($words as $i) {
+          $result = array_merge($result, array(ucfirst($i), strtoupper($i), strtolower($i)));
+      }
+
+      return $result;
   }
 // LOADING FUNCTIONS
-  private function __load($input) {
-    $Source = $this->loadFromSource($input);
-    return $this->loadWithSource($Source);
+  private function __load($input)
+  {
+      $Source = $this->loadFromSource($input);
+
+      return $this->loadWithSource($Source);
   }
-  private function __loadString($input) {
-    $Source = $this->loadFromString($input);
-    return $this->loadWithSource($Source);
-  }
-  private function loadWithSource($Source) {
-    if (empty ($Source)) return array();
-    if ($this->setting_use_syck_is_possible && function_exists ('syck_load')) {
-      $array = syck_load (implode ("\n", $Source));
-      return is_array($array) ? $array : array();
+    private function __loadString($input)
+    {
+        $Source = $this->loadFromString($input);
+
+        return $this->loadWithSource($Source);
     }
-    $this->path = array();
-    $this->result = array();
-    $cnt = count($Source);
-    for ($i = 0; $i < $cnt; $i++) {
-      $line = $Source[$i];
-      $this->indent = strlen($line) - strlen(ltrim($line));
-      $tempPath = $this->getParentPathByIndent($this->indent);
-      $line = self::stripIndent($line, $this->indent);
-      if (self::isComment($line)) continue;
-      if (self::isEmpty($line)) continue;
-      $this->path = $tempPath;
-      $literalBlockStyle = self::startsLiteralBlock($line);
-      if ($literalBlockStyle) {
-        $line = rtrim ($line, $literalBlockStyle . " \n");
-        $literalBlock = '';
-        $line .= ' '.$this->LiteralPlaceHolder;
-        $literal_block_indent = strlen($Source[$i+1]) - strlen(ltrim($Source[$i+1]));
-        while (++$i < $cnt && $this->literalBlockContinues($Source[$i], $this->indent)) {
-          $literalBlock = $this->addLiteralLine($literalBlock, $Source[$i], $literalBlockStyle, $literal_block_indent);
+    private function loadWithSource($Source)
+    {
+        if (empty($Source)) {
+            return array();
         }
-        $i--;
-      }
+        if ($this->setting_use_syck_is_possible && function_exists('syck_load')) {
+            $array = syck_load(implode("\n", $Source));
+
+            return is_array($array) ? $array : array();
+        }
+        $this->path = array();
+        $this->result = array();
+        $cnt = count($Source);
+        for ($i = 0; $i < $cnt; $i++) {
+            $line = $Source[$i];
+            $this->indent = strlen($line) - strlen(ltrim($line));
+            $tempPath = $this->getParentPathByIndent($this->indent);
+            $line = self::stripIndent($line, $this->indent);
+            if (self::isComment($line)) {
+                continue;
+            }
+            if (self::isEmpty($line)) {
+                continue;
+            }
+            $this->path = $tempPath;
+            $literalBlockStyle = self::startsLiteralBlock($line);
+            if ($literalBlockStyle) {
+                $line = rtrim($line, $literalBlockStyle." \n");
+                $literalBlock = '';
+                $line .= ' '.$this->LiteralPlaceHolder;
+                $literal_block_indent = strlen($Source[$i+1]) - strlen(ltrim($Source[$i+1]));
+                while (++$i < $cnt && $this->literalBlockContinues($Source[$i], $this->indent)) {
+                    $literalBlock = $this->addLiteralLine($literalBlock, $Source[$i], $literalBlockStyle, $literal_block_indent);
+                }
+                $i--;
+            }
       // Strip out comments
-      if (strpos ($line, '#')) {
-          $line = preg_replace('/\s*#([^"\']+)$/','',$line);
+      if (strpos($line, '#')) {
+          $line = preg_replace('/\s*#([^"\']+)$/', '', $line);
       }
-      while (++$i < $cnt && self::greedilyNeedNextLine($line)) {
-        $line = rtrim ($line, " \n\t\r") . ' ' . ltrim ($Source[$i], " \t");
+            while (++$i < $cnt && self::greedilyNeedNextLine($line)) {
+                $line = rtrim($line, " \n\t\r").' '.ltrim($Source[$i], " \t");
+            }
+            $i--;
+            $lineArray = $this->_parseLine($line);
+            if ($literalBlockStyle) {
+                $lineArray = $this->revertLiteralPlaceHolder($lineArray, $literalBlock);
+            }
+            $this->addArray($lineArray, $this->indent);
+            foreach ($this->delayedPath as $indent => $delayedPath) {
+                $this->path[$indent] = $delayedPath;
+            }
+            $this->delayedPath = array();
+        }
+
+        return $this->result;
+    }
+    private function loadFromSource($input)
+    {
+        if (!empty($input) && strpos($input, "\n") === false && file_exists($input)) {
+            $input = file_get_contents($input);
+        }
+
+        return $this->loadFromString($input);
+    }
+    private function loadFromString($input)
+    {
+        $lines = explode("\n", $input);
+        foreach ($lines as $k => $_) {
+            $lines[$k] = rtrim($_, "\r");
+        }
+
+        return $lines;
+    }
+  /**
+   * Parses YAML code and returns an array for a node.
+   *
+   * @access private
+   *
+   * @return array
+   *
+   * @param string $line A line from the YAML file
+   */
+  private function _parseLine($line)
+  {
+      if (!$line) {
+          return array();
       }
-      $i--;
-      $lineArray = $this->_parseLine($line);
-      if ($literalBlockStyle)
-        $lineArray = $this->revertLiteralPlaceHolder ($lineArray, $literalBlock);
-      $this->addArray($lineArray, $this->indent);
-      foreach ($this->delayedPath as $indent => $delayedPath)
-        $this->path[$indent] = $delayedPath;
-      $this->delayedPath = array();
-    }
-    return $this->result;
-  }
-  private function loadFromSource ($input) {
-    if (!empty($input) && strpos($input, "\n") === false && file_exists($input))
-      $input = file_get_contents($input);
-    return $this->loadFromString($input);
-  }
-  private function loadFromString ($input) {
-    $lines = explode("\n",$input);
-    foreach ($lines as $k => $_) {
-      $lines[$k] = rtrim ($_, "\r");
-    }
-    return $lines;
+      $line = trim($line);
+      if (!$line) {
+          return array();
+      }
+      $array = array();
+      $group = $this->nodeContainsGroup($line);
+      if ($group) {
+          $this->addGroup($line, $group);
+          $line = $this->stripGroup($line, $group);
+      }
+      if ($this->startsMappedSequence($line)) {
+          return $this->returnMappedSequence($line);
+      }
+      if ($this->startsMappedValue($line)) {
+          return $this->returnMappedValue($line);
+      }
+      if ($this->isArrayElement($line)) {
+          return $this->returnArrayElement($line);
+      }
+      if ($this->isPlainArray($line)) {
+          return $this->returnPlainArray($line);
+      }
+
+      return $this->returnKeyValuePair($line);
   }
   /**
-     * Parses YAML code and returns an array for a node
-     * @access private
-     * @return array
-     * @param string $line A line from the YAML file
-     */
-  private function _parseLine($line) {
-    if (!$line) return array();
-    $line = trim($line);
-    if (!$line) return array();
-    $array = array();
-    $group = $this->nodeContainsGroup($line);
-    if ($group) {
-      $this->addGroup($line, $group);
-      $line = $this->stripGroup ($line, $group);
-    }
-    if ($this->startsMappedSequence($line))
-      return $this->returnMappedSequence($line);
-    if ($this->startsMappedValue($line))
-      return $this->returnMappedValue($line);
-    if ($this->isArrayElement($line))
-     return $this->returnArrayElement($line);
-    if ($this->isPlainArray($line))
-     return $this->returnPlainArray($line);
-    return $this->returnKeyValuePair($line);
-  }
-  /**
-     * Finds the type of the passed value, returns the value as the new type.
-     * @access private
-     * @param string $value
-     * @return mixed
-     */
-  private function _toType($value) {
-    if ($value === '') return "";
-    $first_character = $value[0];
-    $last_character = substr($value, -1, 1);
-    $is_quoted = false;
-    do {
-      if (!$value) break;
-      if ($first_character != '"' && $first_character != "'") break;
-      if ($last_character != '"' && $last_character != "'") break;
-      $is_quoted = true;
-    } while (0);
-    if ($is_quoted) {
-      $value = str_replace('\n', "\n", $value);
-      return strtr(substr ($value, 1, -1), array ('\\"' => '"', '\'\'' => '\'', '\\\'' => '\''));
-    }
-    if (strpos($value, ' #') !== false && !$is_quoted)
-      $value = preg_replace('/\s+#(.+)$/','',$value);
-    if ($first_character == '[' && $last_character == ']') {
-      // Take out strings sequences and mappings
-      $innerValue = trim(substr ($value, 1, -1));
-      if ($innerValue === '') return array();
-      $explode = $this->_inlineEscape($innerValue);
+   * Finds the type of the passed value, returns the value as the new type.
+   *
+   * @access private
+   *
+   * @param string $value
+   *
+   * @return mixed
+   */
+  private function _toType($value)
+  {
+      if ($value === '') {
+          return '';
+      }
+      $first_character = $value[0];
+      $last_character = substr($value, -1, 1);
+      $is_quoted = false;
+      do {
+          if (!$value) {
+              break;
+          }
+          if ($first_character != '"' && $first_character != "'") {
+              break;
+          }
+          if ($last_character != '"' && $last_character != "'") {
+              break;
+          }
+          $is_quoted = true;
+      } while (0);
+      if ($is_quoted) {
+          $value = str_replace('\n', "\n", $value);
+
+          return strtr(substr($value, 1, -1), array('\\"' => '"', '\'\'' => '\'', '\\\'' => '\''));
+      }
+      if (strpos($value, ' #') !== false && !$is_quoted) {
+          $value = preg_replace('/\s+#(.+)$/', '', $value);
+      }
+      if ($first_character == '[' && $last_character == ']') {
+          // Take out strings sequences and mappings
+      $innerValue = trim(substr($value, 1, -1));
+          if ($innerValue === '') {
+              return array();
+          }
+          $explode = $this->_inlineEscape($innerValue);
       // Propagate value array
       $value  = array();
-      foreach ($explode as $v) {
-        $value[] = $this->_toType($v);
+          foreach ($explode as $v) {
+              $value[] = $this->_toType($v);
+          }
+
+          return $value;
       }
-      return $value;
-    }
-    if (strpos($value,': ')!==false && $first_character != '{') {
-      $array = explode(': ',$value);
-      $key   = trim($array[0]);
-      array_shift($array);
-      $value = trim(implode(': ',$array));
-      $value = $this->_toType($value);
-      return array($key => $value);
-    }
-    if ($first_character == '{' && $last_character == '}') {
-      $innerValue = trim(substr ($value, 1, -1));
-      if ($innerValue === '') return array();
+      if (strpos($value, ': ') !== false && $first_character != '{') {
+          $array = explode(': ', $value);
+          $key   = trim($array[0]);
+          array_shift($array);
+          $value = trim(implode(': ', $array));
+          $value = $this->_toType($value);
+
+          return array($key => $value);
+      }
+      if ($first_character == '{' && $last_character == '}') {
+          $innerValue = trim(substr($value, 1, -1));
+          if ($innerValue === '') {
+              return array();
+          }
       // Inline Mapping
       // Take out strings sequences and mappings
       $explode = $this->_inlineEscape($innerValue);
       // Propagate value array
       $array = array();
-      foreach ($explode as $v) {
-        $SubArr = $this->_toType($v);
-        if (empty($SubArr)) continue;
-        if (is_array ($SubArr)) {
-          $array[key($SubArr)] = $SubArr[key($SubArr)]; continue;
-        }
-        $array[] = $SubArr;
+          foreach ($explode as $v) {
+              $SubArr = $this->_toType($v);
+              if (empty($SubArr)) {
+                  continue;
+              }
+              if (is_array($SubArr)) {
+                  $array[key($SubArr)] = $SubArr[key($SubArr)];
+                  continue;
+              }
+              $array[] = $SubArr;
+          }
+
+          return $array;
       }
-      return $array;
-    }
-    if ($value == 'null' || $value == 'NULL' || $value == 'Null' || $value == '' || $value == '~') {
-      return null;
-    }
-    if ( is_numeric($value) && preg_match ('/^(-|)[1-9]+[0-9]*$/', $value) ){
-      $intvalue = (int)$value;
-      if ($intvalue != PHP_INT_MAX)
-        $value = $intvalue;
-      return $value;
-    }
-    if (is_numeric($value) && preg_match('/^0[xX][0-9a-fA-F]+$/', $value)) {
-      // Hexadecimal value.
+      if ($value == 'null' || $value == 'NULL' || $value == 'Null' || $value == '' || $value == '~') {
+          return;
+      }
+      if (is_numeric($value) && preg_match('/^(-|)[1-9]+[0-9]*$/', $value)) {
+          $intvalue = (int) $value;
+          if ($intvalue != PHP_INT_MAX) {
+              $value = $intvalue;
+          }
+
+          return $value;
+      }
+      if (is_numeric($value) && preg_match('/^0[xX][0-9a-fA-F]+$/', $value)) {
+          // Hexadecimal value.
       return hexdec($value);
-    }
-    $this->coerceValue($value);
-    if (is_numeric($value)) {
-      if ($value === '0') return 0;
-      if (rtrim ($value, 0) === $value)
-        $value = (float)$value;
+      }
+      $this->coerceValue($value);
+      if (is_numeric($value)) {
+          if ($value === '0') {
+              return 0;
+          }
+          if (rtrim($value, 0) === $value) {
+              $value = (float) $value;
+          }
+
+          return $value;
+      }
+
       return $value;
-    }
-    return $value;
   }
   /**
-     * Used in inlines to check for more inlines or quoted strings
-     * @access private
-     * @return array
-     */
-  private function _inlineEscape($inline) {
-    // There's gotta be a cleaner way to do this...
+   * Used in inlines to check for more inlines or quoted strings.
+   *
+   * @access private
+   *
+   * @return array
+   */
+  private function _inlineEscape($inline)
+  {
+      // There's gotta be a cleaner way to do this...
     // While pure sequences seem to be nesting just fine,
     // pure mappings and mappings with sequences inside can't go very
     // deep.  This needs to be fixed.
     $seqs = array();
-    $maps = array();
-    $saved_strings = array();
-    $saved_empties = array();
+      $maps = array();
+      $saved_strings = array();
+      $saved_empties = array();
     // Check for empty strings
     $regex = '/("")|(\'\')/';
-    if (preg_match_all($regex,$inline,$strings)) {
-      $saved_empties = $strings[0];
-      $inline  = preg_replace($regex,'YAMLEmpty',$inline);
-    }
-    unset($regex);
+      if (preg_match_all($regex, $inline, $strings)) {
+          $saved_empties = $strings[0];
+          $inline  = preg_replace($regex, 'YAMLEmpty', $inline);
+      }
+      unset($regex);
     // Check for strings
     $regex = '/(?:(")|(?:\'))((?(1)[^"]+|[^\']+))(?(1)"|\')/';
-    if (preg_match_all($regex,$inline,$strings)) {
-      $saved_strings = $strings[0];
-      $inline  = preg_replace($regex,'YAMLString',$inline);
-    }
-    unset($regex);
+      if (preg_match_all($regex, $inline, $strings)) {
+          $saved_strings = $strings[0];
+          $inline  = preg_replace($regex, 'YAMLString', $inline);
+      }
+      unset($regex);
     // echo $inline;
     $i = 0;
-    do {
-    // Check for sequences
-    while (preg_match('/\[([^{}\[\]]+)\]/U',$inline,$matchseqs)) {
-      $seqs[] = $matchseqs[0];
-      $inline = preg_replace('/\[([^{}\[\]]+)\]/U', ('YAMLSeq' . (count($seqs) - 1) . 's'), $inline, 1);
+      do {
+          // Check for sequences
+    while (preg_match('/\[([^{}\[\]]+)\]/U', $inline, $matchseqs)) {
+        $seqs[] = $matchseqs[0];
+        $inline = preg_replace('/\[([^{}\[\]]+)\]/U', ('YAMLSeq'.(count($seqs) - 1).'s'), $inline, 1);
     }
     // Check for mappings
-    while (preg_match('/{([^\[\]{}]+)}/U',$inline,$matchmaps)) {
-      $maps[] = $matchmaps[0];
-      $inline = preg_replace('/{([^\[\]{}]+)}/U', ('YAMLMap' . (count($maps) - 1) . 's'), $inline, 1);
+    while (preg_match('/{([^\[\]{}]+)}/U', $inline, $matchmaps)) {
+        $maps[] = $matchmaps[0];
+        $inline = preg_replace('/{([^\[\]{}]+)}/U', ('YAMLMap'.(count($maps) - 1).'s'), $inline, 1);
     }
-    if ($i++ >= 10) break;
-    } while (strpos ($inline, '[') !== false || strpos ($inline, '{') !== false);
-    $explode = explode(',',$inline);
-    $explode = array_map('trim', $explode);
-    $stringi = 0; $i = 0;
-    while (1) {
-    // Re-add the sequences
-    if (!empty($seqs)) {
-      foreach ($explode as $key => $value) {
-        if (strpos($value,'YAMLSeq') !== false) {
-          foreach ($seqs as $seqk => $seq) {
-            $explode[$key] = str_replace(('YAMLSeq'.$seqk.'s'),$seq,$value);
-            $value = $explode[$key];
+          if ($i++ >= 10) {
+              break;
           }
+      } while (strpos($inline, '[') !== false || strpos($inline, '{') !== false);
+      $explode = explode(',', $inline);
+      $explode = array_map('trim', $explode);
+      $stringi = 0;
+      $i = 0;
+      while (1) {
+          // Re-add the sequences
+    if (!empty($seqs)) {
+        foreach ($explode as $key => $value) {
+            if (strpos($value, 'YAMLSeq') !== false) {
+                foreach ($seqs as $seqk => $seq) {
+                    $explode[$key] = str_replace(('YAMLSeq'.$seqk.'s'), $seq, $value);
+                    $value = $explode[$key];
+                }
+            }
         }
-      }
     }
     // Re-add the mappings
     if (!empty($maps)) {
-      foreach ($explode as $key => $value) {
-        if (strpos($value,'YAMLMap') !== false) {
-          foreach ($maps as $mapk => $map) {
-            $explode[$key] = str_replace(('YAMLMap'.$mapk.'s'), $map, $value);
-            $value = $explode[$key];
-          }
+        foreach ($explode as $key => $value) {
+            if (strpos($value, 'YAMLMap') !== false) {
+                foreach ($maps as $mapk => $map) {
+                    $explode[$key] = str_replace(('YAMLMap'.$mapk.'s'), $map, $value);
+                    $value = $explode[$key];
+                }
+            }
         }
-      }
     }
     // Re-add the strings
     if (!empty($saved_strings)) {
-      foreach ($explode as $key => $value) {
-        while (strpos($value,'YAMLString') !== false) {
-          $explode[$key] = preg_replace('/YAMLString/',$saved_strings[$stringi],$value, 1);
-          unset($saved_strings[$stringi]);
-          ++$stringi;
-          $value = $explode[$key];
+        foreach ($explode as $key => $value) {
+            while (strpos($value, 'YAMLString') !== false) {
+                $explode[$key] = preg_replace('/YAMLString/', $saved_strings[$stringi], $value, 1);
+                unset($saved_strings[$stringi]);
+                ++$stringi;
+                $value = $explode[$key];
+            }
         }
-      }
     }
     // Re-add the empties
     if (!empty($saved_empties)) {
-      foreach ($explode as $key => $value) {
-        while (strpos($value,'YAMLEmpty') !== false) {
-          $explode[$key] = preg_replace('/YAMLEmpty/', '', $value, 1);
-          $value = $explode[$key];
+        foreach ($explode as $key => $value) {
+            while (strpos($value, 'YAMLEmpty') !== false) {
+                $explode[$key] = preg_replace('/YAMLEmpty/', '', $value, 1);
+                $value = $explode[$key];
+            }
         }
-      }
     }
-    $finished = true;
-    foreach ($explode as $key => $value) {
-      if (strpos($value,'YAMLSeq') !== false) {
-        $finished = false; break;
+          $finished = true;
+          foreach ($explode as $key => $value) {
+              if (strpos($value, 'YAMLSeq') !== false) {
+                  $finished = false;
+                  break;
+              }
+              if (strpos($value, 'YAMLMap') !== false) {
+                  $finished = false;
+                  break;
+              }
+              if (strpos($value, 'YAMLString') !== false) {
+                  $finished = false;
+                  break;
+              }
+              if (strpos($value, 'YAMLEmpty') !== false) {
+                  $finished = false;
+                  break;
+              }
+          }
+          if ($finished) {
+              break;
+          }
+          $i++;
+          if ($i > 10) {
+              break;
+          } // Prevent infinite loops.
       }
-      if (strpos($value,'YAMLMap') !== false) {
-        $finished = false; break;
-      }
-      if (strpos($value,'YAMLString') !== false) {
-        $finished = false; break;
-      }
-      if (strpos($value,'YAMLEmpty') !== false) {
-        $finished = false; break;
-      }
+
+      return $explode;
+  }
+    private function literalBlockContinues($line, $lineIndent)
+    {
+        if (!trim($line)) {
+            return true;
+        }
+        if (strlen($line) - strlen(ltrim($line)) > $lineIndent) {
+            return true;
+        }
+
+        return false;
     }
-    if ($finished) break;
-    $i++;
-    if ($i > 10)
-      break; // Prevent infinite loops.
+    private function referenceContentsByAlias($alias)
+    {
+        do {
+            if (!isset($this->SavedGroups[$alias])) {
+                echo "Bad group name: $alias.";
+                break;
+            }
+            $groupPath = $this->SavedGroups[$alias];
+            $value = $this->result;
+            foreach ($groupPath as $k) {
+                $value = $value[$k];
+            }
+        } while (false);
+
+        return $value;
     }
-    return $explode;
-  }
-  private function literalBlockContinues ($line, $lineIndent) {
-    if (!trim($line)) return true;
-    if (strlen($line) - strlen(ltrim($line)) > $lineIndent) return true;
-    return false;
-  }
-  private function referenceContentsByAlias ($alias) {
-    do {
-      if (!isset($this->SavedGroups[$alias])) { echo "Bad group name: $alias."; break; }
-      $groupPath = $this->SavedGroups[$alias];
-      $value = $this->result;
-      foreach ($groupPath as $k) {
-        $value = $value[$k];
-      }
-    } while (false);
-    return $value;
-  }
-  private function addArrayInline ($array, $indent) {
-      $CommonGroupPath = $this->path;
-      if (empty ($array)) return false;
-      foreach ($array as $k => $_) {
-        $this->addArray(array($k => $_), $indent);
-        $this->path = $CommonGroupPath;
-      }
-      return true;
-  }
-  private function addArray ($incoming_data, $incoming_indent) {
-   // print_r ($incoming_data);
-    if (count ($incoming_data) > 1)
-      return $this->addArrayInline ($incoming_data, $incoming_indent);
-    $key = key ($incoming_data);
-    $value = isset($incoming_data[$key]) ? $incoming_data[$key] : null;
-    if ($key === '__!YAMLZero') $key = '0';
-    if ($incoming_indent == 0 && !$this->_containsGroupAlias && !$this->_containsGroupAnchor) { // Shortcut for root-level values.
+    private function addArrayInline($array, $indent)
+    {
+        $CommonGroupPath = $this->path;
+        if (empty($array)) {
+            return false;
+        }
+        foreach ($array as $k => $_) {
+            $this->addArray(array($k => $_), $indent);
+            $this->path = $CommonGroupPath;
+        }
+
+        return true;
+    }
+    private function addArray($incoming_data, $incoming_indent)
+    {
+        // print_r ($incoming_data);
+    if (count($incoming_data) > 1) {
+        return $this->addArrayInline($incoming_data, $incoming_indent);
+    }
+        $key = key($incoming_data);
+        $value = isset($incoming_data[$key]) ? $incoming_data[$key] : null;
+        if ($key === '__!YAMLZero') {
+            $key = '0';
+        }
+        if ($incoming_indent == 0 && !$this->_containsGroupAlias && !$this->_containsGroupAnchor) { // Shortcut for root-level values.
       if ($key || $key === '' || $key === '0') {
-        $this->result[$key] = $value;
+          $this->result[$key] = $value;
       } else {
-        $this->result[] = $value; end ($this->result); $key = key ($this->result);
+          $this->result[] = $value;
+          end($this->result);
+          $key = key($this->result);
       }
-      $this->path[$incoming_indent] = $key;
-      return;
-    }
-    $history = array();
+            $this->path[$incoming_indent] = $key;
+
+            return;
+        }
+        $history = array();
     // Unfolding inner array tree.
     $history[] = $_arr = $this->result;
-    foreach ($this->path as $k) {
-      $history[] = $_arr = $_arr[$k];
-    }
-    if ($this->_containsGroupAlias) {
-      $value = $this->referenceContentsByAlias($this->_containsGroupAlias);
-      $this->_containsGroupAlias = false;
-    }
+        foreach ($this->path as $k) {
+            $history[] = $_arr = $_arr[$k];
+        }
+        if ($this->_containsGroupAlias) {
+            $value = $this->referenceContentsByAlias($this->_containsGroupAlias);
+            $this->_containsGroupAlias = false;
+        }
     // Adding string or numeric key to the innermost level or $this->arr.
     if (is_string($key) && $key == '<<') {
-      if (!is_array ($_arr)) { $_arr = array (); }
-      $_arr = array_merge ($_arr, $value);
-    } else if ($key || $key === '' || $key === '0') {
-      if (!is_array ($_arr))
-        $_arr = array ($key=>$value);
-      else
-        $_arr[$key] = $value;
-    } else {
-      if (!is_array ($_arr)) { $_arr = array ($value); $key = 0; }
-      else { $_arr[] = $value; end ($_arr); $key = key ($_arr); }
-    }
-    $reverse_path = array_reverse($this->path);
-    $reverse_history = array_reverse ($history);
-    $reverse_history[0] = $_arr;
-    $cnt = count($reverse_history) - 1;
-    for ($i = 0; $i < $cnt; $i++) {
-      $reverse_history[$i+1][$reverse_path[$i]] = $reverse_history[$i];
-    }
-    $this->result = $reverse_history[$cnt];
-    $this->path[$incoming_indent] = $key;
-    if ($this->_containsGroupAnchor) {
-      $this->SavedGroups[$this->_containsGroupAnchor] = $this->path;
-      if (is_array ($value)) {
-        $k = key ($value);
-        if (!is_int ($k)) {
-          $this->SavedGroups[$this->_containsGroupAnchor][$incoming_indent + 2] = $k;
+        if (!is_array($_arr)) {
+            $_arr = array();
         }
-      }
-      $this->_containsGroupAnchor = false;
+        $_arr = array_merge($_arr, $value);
+    } elseif ($key || $key === '' || $key === '0') {
+        if (!is_array($_arr)) {
+            $_arr = array($key => $value);
+        } else {
+            $_arr[$key] = $value;
+        }
+    } else {
+        if (!is_array($_arr)) {
+            $_arr = array($value);
+            $key = 0;
+        } else {
+            $_arr[] = $value;
+            end($_arr);
+            $key = key($_arr);
+        }
     }
-  }
-  private static function startsLiteralBlock ($line) {
-    $lastChar = substr (trim($line), -1);
-    if ($lastChar != '>' && $lastChar != '|') return false;
-    if ($lastChar == '|') return $lastChar;
+        $reverse_path = array_reverse($this->path);
+        $reverse_history = array_reverse($history);
+        $reverse_history[0] = $_arr;
+        $cnt = count($reverse_history) - 1;
+        for ($i = 0; $i < $cnt; $i++) {
+            $reverse_history[$i+1][$reverse_path[$i]] = $reverse_history[$i];
+        }
+        $this->result = $reverse_history[$cnt];
+        $this->path[$incoming_indent] = $key;
+        if ($this->_containsGroupAnchor) {
+            $this->SavedGroups[$this->_containsGroupAnchor] = $this->path;
+            if (is_array($value)) {
+                $k = key($value);
+                if (!is_int($k)) {
+                    $this->SavedGroups[$this->_containsGroupAnchor][$incoming_indent + 2] = $k;
+                }
+            }
+            $this->_containsGroupAnchor = false;
+        }
+    }
+    private static function startsLiteralBlock($line)
+    {
+        $lastChar = substr(trim($line), -1);
+        if ($lastChar != '>' && $lastChar != '|') {
+            return false;
+        }
+        if ($lastChar == '|') {
+            return $lastChar;
+        }
     // HTML tags should not be counted as literal blocks.
-    if (preg_match ('#<.*?>$#', $line)) return false;
-    return $lastChar;
-  }
-  private static function greedilyNeedNextLine($line) {
-    $line = trim ($line);
-    if (!strlen($line)) return false;
-    if (substr ($line, -1, 1) == ']') return false;
-    if ($line[0] == '[') return true;
-    if (preg_match ('#^[^:]+?:\s*\[#', $line)) return true;
-    return false;
-  }
-  private function addLiteralLine ($literalBlock, $line, $literalBlockStyle, $indent = -1) {
-    $line = self::stripIndent($line, $indent);
-    if ($literalBlockStyle !== '|') {
-        $line = self::stripIndent($line);
+    if (preg_match('#<.*?>$#', $line)) {
+        return false;
     }
-    $line = rtrim ($line, "\r\n\t ") . "\n";
-    if ($literalBlockStyle == '|') {
-      return $literalBlock . $line;
+
+        return $lastChar;
     }
-    if (strlen($line) == 0)
-      return rtrim($literalBlock, ' ') . "\n";
-    if ($line == "\n" && $literalBlockStyle == '>') {
-      return rtrim ($literalBlock, " \t") . "\n";
+    private static function greedilyNeedNextLine($line)
+    {
+        $line = trim($line);
+        if (!strlen($line)) {
+            return false;
+        }
+        if (substr($line, -1, 1) == ']') {
+            return false;
+        }
+        if ($line[0] == '[') {
+            return true;
+        }
+        if (preg_match('#^[^:]+?:\s*\[#', $line)) {
+            return true;
+        }
+
+        return false;
     }
-    if ($line != "\n")
-      $line = trim ($line, "\r\n ") . " ";
-    return $literalBlock . $line;
-  }
-   function revertLiteralPlaceHolder ($lineArray, $literalBlock) {
-     foreach ($lineArray as $k => $_) {
-      if (is_array($_))
-        $lineArray[$k] = $this->revertLiteralPlaceHolder ($_, $literalBlock);
-      else if (substr($_, -1 * strlen ($this->LiteralPlaceHolder)) == $this->LiteralPlaceHolder)
-	       $lineArray[$k] = rtrim ($literalBlock, " \r\n");
-     }
-     return $lineArray;
-   }
-  private static function stripIndent ($line, $indent = -1) {
-    if ($indent == -1) $indent = strlen($line) - strlen(ltrim($line));
-    return substr ($line, $indent);
-  }
-  private function getParentPathByIndent ($indent) {
-    if ($indent == 0) return array();
-    $linePath = $this->path;
-    do {
-      end($linePath); $lastIndentInParentPath = key($linePath);
-      if ($indent <= $lastIndentInParentPath) array_pop ($linePath);
-    } while ($indent <= $lastIndentInParentPath);
-    return $linePath;
-  }
-  private function clearBiggerPathValues ($indent) {
-    if ($indent == 0) $this->path = array();
-    if (empty ($this->path)) return true;
-    foreach ($this->path as $k => $_) {
-      if ($k > $indent) unset ($this->path[$k]);
+    private function addLiteralLine($literalBlock, $line, $literalBlockStyle, $indent = -1)
+    {
+        $line = self::stripIndent($line, $indent);
+        if ($literalBlockStyle !== '|') {
+            $line = self::stripIndent($line);
+        }
+        $line = rtrim($line, "\r\n\t ")."\n";
+        if ($literalBlockStyle == '|') {
+            return $literalBlock.$line;
+        }
+        if (strlen($line) == 0) {
+            return rtrim($literalBlock, ' ')."\n";
+        }
+        if ($line == "\n" && $literalBlockStyle == '>') {
+            return rtrim($literalBlock, " \t")."\n";
+        }
+        if ($line != "\n") {
+            $line = trim($line, "\r\n ").' ';
+        }
+
+        return $literalBlock.$line;
     }
-    return true;
-  }
-  private static function isComment ($line) {
-    if (!$line) return false;
-    if ($line[0] == '#') return true;
-    if (trim($line, " \r\n\t") == '---') return true;
-    return false;
-  }
-  private static function isEmpty ($line) {
-    return (trim ($line) === '');
-  }
-  private function isArrayElement ($line) {
-    if (!$line || !is_scalar($line)) return false;
-    if (substr($line, 0, 2) != '- ') return false;
-    if (strlen ($line) > 3)
-      if (substr($line,0,3) == '---') return false;
-    return true;
-  }
-  private function isHashElement ($line) {
-    return strpos($line, ':');
-  }
-  private function isLiteral ($line) {
-    if ($this->isArrayElement($line)) return false;
-    if ($this->isHashElement($line)) return false;
-    return true;
-  }
-  private static function unquote ($value) {
-    if (!$value) return $value;
-    if (!is_string($value)) return $value;
-    if ($value[0] == '\'') return trim ($value, '\'');
-    if ($value[0] == '"') return trim ($value, '"');
-    return $value;
-  }
-  private function startsMappedSequence ($line) {
-    return (substr($line, 0, 2) == '- ' && substr ($line, -1, 1) == ':');
-  }
-  private function returnMappedSequence ($line) {
-    $array = array();
-    $key         = self::unquote(trim(substr($line,1,-1)));
-    $array[$key] = array();
-    $this->delayedPath = array(strpos ($line, $key) + $this->indent => $key);
-    return array($array);
-  }
-  private function checkKeysInValue($value) {
-    if (strchr('[{"\'', $value[0]) === false) {
-      if (strchr($value, ': ') !== false) {
-          throw new Exception('Too many keys: '.$value);
-      }
+    public function revertLiteralPlaceHolder($lineArray, $literalBlock)
+    {
+        foreach ($lineArray as $k => $_) {
+            if (is_array($_)) {
+                $lineArray[$k] = $this->revertLiteralPlaceHolder($_, $literalBlock);
+            } elseif (substr($_, -1 * strlen($this->LiteralPlaceHolder)) == $this->LiteralPlaceHolder) {
+                $lineArray[$k] = rtrim($literalBlock, " \r\n");
+            }
+        }
+
+        return $lineArray;
     }
-  }
-  private function returnMappedValue ($line) {
-    $this->checkKeysInValue($line);
-    $array = array();
-    $key         = self::unquote (trim(substr($line,0,-1)));
-    $array[$key] = '';
-    return $array;
-  }
-  private function startsMappedValue ($line) {
-    return (substr ($line, -1, 1) == ':');
-  }
-  private function isPlainArray ($line) {
-    return ($line[0] == '[' && substr ($line, -1, 1) == ']');
-  }
-  private function returnPlainArray ($line) {
-    return $this->_toType($line);
-  }
-  private function returnKeyValuePair ($line) {
-    $array = array();
-    $key = '';
-    if (strpos ($line, ': ')) {
-      // It's a key/value pair most likely
+    private static function stripIndent($line, $indent = -1)
+    {
+        if ($indent == -1) {
+            $indent = strlen($line) - strlen(ltrim($line));
+        }
+
+        return substr($line, $indent);
+    }
+    private function getParentPathByIndent($indent)
+    {
+        if ($indent == 0) {
+            return array();
+        }
+        $linePath = $this->path;
+        do {
+            end($linePath);
+            $lastIndentInParentPath = key($linePath);
+            if ($indent <= $lastIndentInParentPath) {
+                array_pop($linePath);
+            }
+        } while ($indent <= $lastIndentInParentPath);
+
+        return $linePath;
+    }
+    private function clearBiggerPathValues($indent)
+    {
+        if ($indent == 0) {
+            $this->path = array();
+        }
+        if (empty($this->path)) {
+            return true;
+        }
+        foreach ($this->path as $k => $_) {
+            if ($k > $indent) {
+                unset($this->path[$k]);
+            }
+        }
+
+        return true;
+    }
+    private static function isComment($line)
+    {
+        if (!$line) {
+            return false;
+        }
+        if ($line[0] == '#') {
+            return true;
+        }
+        if (trim($line, " \r\n\t") == '---') {
+            return true;
+        }
+
+        return false;
+    }
+    private static function isEmpty($line)
+    {
+        return (trim($line) === '');
+    }
+    private function isArrayElement($line)
+    {
+        if (!$line || !is_scalar($line)) {
+            return false;
+        }
+        if (substr($line, 0, 2) != '- ') {
+            return false;
+        }
+        if (strlen($line) > 3) {
+            if (substr($line, 0, 3) == '---') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    private function isHashElement($line)
+    {
+        return strpos($line, ':');
+    }
+    private function isLiteral($line)
+    {
+        if ($this->isArrayElement($line)) {
+            return false;
+        }
+        if ($this->isHashElement($line)) {
+            return false;
+        }
+
+        return true;
+    }
+    private static function unquote($value)
+    {
+        if (!$value) {
+            return $value;
+        }
+        if (!is_string($value)) {
+            return $value;
+        }
+        if ($value[0] == '\'') {
+            return trim($value, '\'');
+        }
+        if ($value[0] == '"') {
+            return trim($value, '"');
+        }
+
+        return $value;
+    }
+    private function startsMappedSequence($line)
+    {
+        return (substr($line, 0, 2) == '- ' && substr($line, -1, 1) == ':');
+    }
+    private function returnMappedSequence($line)
+    {
+        $array = array();
+        $key         = self::unquote(trim(substr($line, 1, -1)));
+        $array[$key] = array();
+        $this->delayedPath = array(strpos($line, $key) + $this->indent => $key);
+
+        return array($array);
+    }
+    private function checkKeysInValue($value)
+    {
+        if (strchr('[{"\'', $value[0]) === false) {
+            if (strchr($value, ': ') !== false) {
+                throw new Exception('Too many keys: '.$value);
+            }
+        }
+    }
+    private function returnMappedValue($line)
+    {
+        $this->checkKeysInValue($line);
+        $array = array();
+        $key         = self::unquote(trim(substr($line, 0, -1)));
+        $array[$key] = '';
+
+        return $array;
+    }
+    private function startsMappedValue($line)
+    {
+        return (substr($line, -1, 1) == ':');
+    }
+    private function isPlainArray($line)
+    {
+        return ($line[0] == '[' && substr($line, -1, 1) == ']');
+    }
+    private function returnPlainArray($line)
+    {
+        return $this->_toType($line);
+    }
+    private function returnKeyValuePair($line)
+    {
+        $array = array();
+        $key = '';
+        if (strpos($line, ': ')) {
+            // It's a key/value pair most likely
       // If the key is in double quotes pull it out
-      if (($line[0] == '"' || $line[0] == "'") && preg_match('/^(["\'](.*)["\'](\s)*:)/',$line,$matches)) {
-        $value = trim(str_replace($matches[1],'',$line));
-        $key   = $matches[2];
+      if (($line[0] == '"' || $line[0] == "'") && preg_match('/^(["\'](.*)["\'](\s)*:)/', $line, $matches)) {
+          $value = trim(str_replace($matches[1], '', $line));
+          $key   = $matches[2];
       } else {
-        // Do some guesswork as to the key and the value
+          // Do some guesswork as to the key and the value
         $explode = explode(': ', $line);
-        $key     = trim(array_shift($explode));
-        $value   = trim(implode(': ', $explode));
-        $this->checkKeysInValue($value);
+          $key     = trim(array_shift($explode));
+          $value   = trim(implode(': ', $explode));
+          $this->checkKeysInValue($value);
       }
       // Set the type of the value.  Int, string, etc
       $value = $this->_toType($value);
-      if ($key === '0') $key = '__!YAMLZero';
-      $array[$key] = $value;
-    } else {
-      $array = array ($line);
+            if ($key === '0') {
+                $key = '__!YAMLZero';
+            }
+            $array[$key] = $value;
+        } else {
+            $array = array($line);
+        }
+
+        return $array;
     }
-    return $array;
-  }
-  private function returnArrayElement ($line) {
-     if (strlen($line) <= 1) return array(array()); // Weird %)
+    private function returnArrayElement($line)
+    {
+        if (strlen($line) <= 1) {
+            return array(array());
+        } // Weird %)
      $array = array();
-     $value   = trim(substr($line,1));
-     $value   = $this->_toType($value);
-     if ($this->isArrayElement($value)) {
-       $value = $this->returnArrayElement($value);
-     }
-     $array[] = $value;
-     return $array;
-  }
-  private function nodeContainsGroup ($line) {
-    $symbolsForReference = 'A-z0-9_\-';
-    if (strpos($line, '&') === false && strpos($line, '*') === false) return false; // Please die fast ;-)
-    if ($line[0] == '&' && preg_match('/^(&['.$symbolsForReference.']+)/', $line, $matches)) return $matches[1];
-    if ($line[0] == '*' && preg_match('/^(\*['.$symbolsForReference.']+)/', $line, $matches)) return $matches[1];
-    if (preg_match('/(&['.$symbolsForReference.']+)$/', $line, $matches)) return $matches[1];
-    if (preg_match('/(\*['.$symbolsForReference.']+$)/', $line, $matches)) return $matches[1];
-    if (preg_match ('#^\s*<<\s*:\s*(\*[^\s]+).*$#', $line, $matches)) return $matches[1];
-    return false;
-  }
-  private function addGroup ($line, $group) {
-    if ($group[0] == '&') $this->_containsGroupAnchor = substr ($group, 1);
-    if ($group[0] == '*') $this->_containsGroupAlias = substr ($group, 1);
+        $value   = trim(substr($line, 1));
+        $value   = $this->_toType($value);
+        if ($this->isArrayElement($value)) {
+            $value = $this->returnArrayElement($value);
+        }
+        $array[] = $value;
+
+        return $array;
+    }
+    private function nodeContainsGroup($line)
+    {
+        $symbolsForReference = 'A-z0-9_\-';
+        if (strpos($line, '&') === false && strpos($line, '*') === false) {
+            return false;
+        } // Please die fast ;-)
+    if ($line[0] == '&' && preg_match('/^(&['.$symbolsForReference.']+)/', $line, $matches)) {
+        return $matches[1];
+    }
+        if ($line[0] == '*' && preg_match('/^(\*['.$symbolsForReference.']+)/', $line, $matches)) {
+            return $matches[1];
+        }
+        if (preg_match('/(&['.$symbolsForReference.']+)$/', $line, $matches)) {
+            return $matches[1];
+        }
+        if (preg_match('/(\*['.$symbolsForReference.']+$)/', $line, $matches)) {
+            return $matches[1];
+        }
+        if (preg_match('#^\s*<<\s*:\s*(\*[^\s]+).*$#', $line, $matches)) {
+            return $matches[1];
+        }
+
+        return false;
+    }
+    private function addGroup($line, $group)
+    {
+        if ($group[0] == '&') {
+            $this->_containsGroupAnchor = substr($group, 1);
+        }
+        if ($group[0] == '*') {
+            $this->_containsGroupAlias = substr($group, 1);
+        }
     //print_r ($this->path);
-  }
-  private function stripGroup ($line, $group) {
-    $line = trim(str_replace($group, '', $line));
-    return $line;
-  }
+    }
+    private function stripGroup($line, $group)
+    {
+        $line = trim(str_replace($group, '', $line));
+
+        return $line;
+    }
 }
 // Enable use of Spyc from command line
 // The syntax is the following: php Spyc.php spyc.yaml
 do {
-  if (PHP_SAPI != 'cli') break;
-  if (empty ($_SERVER['argc']) || $_SERVER['argc'] < 2) break;
-  if (empty ($_SERVER['PHP_SELF']) || FALSE === strpos ($_SERVER['PHP_SELF'], 'Spyc.php') ) break;
-  $file = $argv[1];
-  echo json_encode (spyc_load_file ($file));
+    if (PHP_SAPI != 'cli') {
+        break;
+    }
+    if (empty($_SERVER['argc']) || $_SERVER['argc'] < 2) {
+        break;
+    }
+    if (empty($_SERVER['PHP_SELF']) || false === strpos($_SERVER['PHP_SELF'], 'Spyc.php')) {
+        break;
+    }
+    $file = $argv[1];
+    echo json_encode(spyc_load_file($file));
 } while (0);
+
 
 // Source: classes/export/YAMLExport.php
 
 
 
-class YAMLExport implements ExportInterface {
-
+class YAMLExport implements ExportInterface
+{
     public function export($arr, $directory, $language)
     {
-
         $file = $directory . DIRECTORY_SEPARATOR . $language . '.yml';
-        
-        
 
         $fp = fopen($file, 'w');
         fwrite($fp, spyc_dump($arr));
         fclose($fp);
-        
-        return file_exists($file);
 
+        return file_exists($file);
     }
 }
+
 
 // Source: classes/general/Foler.php
 
@@ -1088,66 +1392,56 @@ class YAMLExport implements ExportInterface {
 /**
  * @author Serkin Alexander <serkin.alexander@gmail.com>
  */
-class Foler {
-
-    
+class Foler
+{
     /**
-     *
-     * @var PDO 
+     * @var PDO
      */
-    protected $dbh  = null;
+    protected $dbh = null;
 
     /**
-     *
      * @var string
      */
     protected $dbDSN;
-    
+
     /**
-     *
      * @var string
      */
     protected $dbUser;
-    
+
     /**
-     *
      * @var string
      */
     protected $dbPassword;
 
     /**
-     *
      * @var string
      */
     protected $error;
 
     /**
-     * 
      * @param string $dbDSN
      * @param string $dbUser
      * @param string $dbPassword
      */
-    public function __construct($dbDSN, $dbUser, $dbPassword = '') {
-
-
+    public function __construct($dbDSN, $dbUser, $dbPassword = '')
+    {
         $this->dbDSN        = $dbDSN;
         $this->dbUser       = $dbUser;
         $this->dbPassword   = $dbPassword;
-
     }
 
     /**
-     * Connects to database
-     * 
+     * Connects to database.
+     *
      * @throws PDOException
-     * @return void
      */
-    public function connect(){
+    public function connect()
+    {
         $dbh = new PDO($this->dbDSN, $this->dbUser, $this->dbPassword);
         $this->dbh = $dbh;
         $this->dbh->exec('SET NAMES utf8');
     }
-    
 
     public function getError()
     {
@@ -1155,27 +1449,28 @@ class Foler {
     }
 
     /**
-     * Gets all projects
-     * 
+     * Gets all projects.
+     *
      * @return array
      */
-    public function getAllProjects(){
-
-        $sth = $this->dbh->prepare("SELECT * FROM `project`");
+    public function getAllProjects()
+    {
+        $sth = $this->dbh->prepare('SELECT * FROM `project`');
         $sth->execute();
+
         return $sth->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
-     * Gets all codes from project
-     * 
-     * @param integer $idProject
+     * Gets all codes from project.
+     *
+     * @param int    $idProject
      * @param string $keyword
+     *
      * @return array
      */
     public function getAllCodes($idProject, $keyword = null)
     {
-
         $sth = $this->dbh->prepare('SELECT DISTINCT (`code`) FROM `translation` WHERE `id_project` = ? and `code` like ?');
 
         $keyword = !is_null($keyword) ? "%$keyword%" : '';
@@ -1188,18 +1483,18 @@ class Foler {
     }
 
     /**
-     * Gets translation according with given code and idProject or all records
-     * 
-     * @param integer $idProject
+     * Gets translation according with given code and idProject or all records.
+     *
+     * @param int    $idProject
      * @param string $code
+     *
      * @return array
      */
-    public function getTranslation($idProject, $code = null){
-
+    public function getTranslation($idProject, $code = null)
+    {
         $languages = $this->getLanguagesFromProject($idProject);
 
         $dbRecords = !is_null($code) ? $this->getCodeTranslation($idProject, $code) : array();
-
 
         $returnValue = array();
         $returnValue['code'] = $code;
@@ -1207,37 +1502,33 @@ class Foler {
         foreach ($languages as $lang):
             $returnValue['translations'][] = array(
                 'language'      => $lang,
-                'translation'   => !empty($dbRecords[$lang]) ? $dbRecords[$lang] : ''
+                'translation'   => !empty($dbRecords[$lang]) ? $dbRecords[$lang] : '',
             );
         endforeach;
 
-        return $returnValue;      
-
+        return $returnValue;
     }
-    
+
     public function getAllTranslationsFromProject($idProject)
     {
-        
         $sth = $this->dbh->prepare('SELECT * FROM `translation` WHERE `id_project` = ?');
         $sth->bindParam(1, $idProject, PDO::PARAM_INT);
         $sth->execute();
 
         return $sth->fetchAll(PDO::FETCH_ASSOC);
-
     }
-
 
     private function getCodeTranslation($idProject, $code)
     {
         $returnValue = array();
- 
+
         $sth = $this->dbh->prepare('SELECT * FROM `translation` WHERE `id_project` = ? and `code` = ?');
         $sth->bindParam(1, $idProject, PDO::PARAM_INT);
         $sth->bindParam(2, $code, PDO::PARAM_STR);
 
         $sth->execute();
 
-        foreach($sth->fetchAll(PDO::FETCH_ASSOC) as $record):
+        foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $record):
             $returnValue[$record['language']] = $record['translation'];
         endforeach;
 
@@ -1245,192 +1536,190 @@ class Foler {
     }
 
     /**
-     * Get all information about project
-     * 
-     * @param integer $idProject
+     * Get all information about project.
+     *
+     * @param int $idProject
+     *
      * @return array
      */
     public function getProjectById($idProject)
     {
-        $sth = $this->dbh->prepare("SELECT * FROM `project` WHERE `id_project` = ?");
+        $sth = $this->dbh->prepare('SELECT * FROM `project` WHERE `id_project` = ?');
         $sth->bindParam(1, $idProject, PDO::PARAM_INT);
         $sth->execute();
+
         return $sth->fetch(PDO::FETCH_ASSOC);
     }
-    
+
     public function getProjectIdByCodeId($idCode)
     {
-        $sth = $this->dbh->prepare("SELECT `id_project` FROM `code` WHERE `id_code` = ?");
+        $sth = $this->dbh->prepare('SELECT `id_project` FROM `code` WHERE `id_code` = ?');
         $sth->bindParam(1, $idCode, PDO::PARAM_INT);
         $sth->execute();
         $arr = $sth->fetch(PDO::FETCH_ASSOC);
-        
+
         return $arr['id_project'];
-        
     }
 
-
     /**
-     * Saves project
-     * 
+     * Saves project.
+     *
      * Edits project if $idProject was specified
-     * 
+     *
      * @param string $name
      * @param string $path
      * @param string $languages
-     * @param integer $idProject
-     * 
-     * @return int|boolean False on error
+     * @param int    $idProject
+     *
+     * @return int|bool False on error
      */
-    public function saveProject($name, $path, $languages, $idProject = null){
-
-        if(is_null($idProject)):
+    public function saveProject($name, $path, $languages, $idProject = null)
+    {
+        if (is_null($idProject)) {
             $sth = $this->dbh->prepare('INSERT INTO `project` (`name`, `path`, `languages`) VALUES(?, ?, ?)');
-        else:
+        } else {
             $sth = $this->dbh->prepare('UPDATE `project` SET `name` = ?, `path` = ?, `languages` = ? WHERE `id_project` = ?');
-        endif;
+        }
 
-        $sth->bindParam(1, $name,        PDO::PARAM_STR);
-        $sth->bindParam(2, $path,        PDO::PARAM_STR);
-        $sth->bindParam(3, $languages,   PDO::PARAM_STR);
+        $sth->bindParam(1, $name, PDO::PARAM_STR);
+        $sth->bindParam(2, $path, PDO::PARAM_STR);
+        $sth->bindParam(3, $languages, PDO::PARAM_STR);
 
-        if(is_null($idProject)):
+        if (is_null($idProject)) {
             $sth->execute();
             $returnValue = $this->dbh->lastInsertId() ? $this->dbh->lastInsertId() : 0;
-        else:
+        } else {
             $sth->bindParam(4, $idProject, PDO::PARAM_INT);
             $sth->execute();
             $returnValue = $idProject;
-        endif;
+        }
 
         return $returnValue;
-
     }
-    
+
     /**
-     * Removes project
-     * 
+     * Removes project.
+     *
      * @param int $idProject
-     * 
-     * @return boolean
+     *
+     * @return bool
      */
-    public function deleteProject($idProject){
-        
-        $sql = "DELETE FROM `project` WHERE `id_project` = " . $idProject;
-        return $this->dbh->exec($sql) ? true : false;
+    public function deleteProject($idProject)
+    {
+        $sth = $this->dbh->prepare('DELETE FROM `project` WHERE `id_project` = ?');
+
+        $sth->bindParam(1, $idProject, PDO::PARAM_INT);
+
+        return $sth->execute();
     }
 
-
     /**
-     * 
-     * @param integer $idProject
+     * @param int    $idProject
      * @param string $code
-     * @param array $arr
-     * 
-     * @return boolean
+     * @param array  $arr
+     *
+     * @return bool
      */
     public function saveTranslation($idProject, $code, $arr)
     {
-        
-
         $languages = $this->getLanguagesFromProject($idProject);
 
         foreach ($languages as $language):
-            
-            if(isset($arr[$language])):
-                $value = !empty($arr[$language]) ? $arr[$language] : '';
-            
-                $sth = $this->dbh->prepare('INSERT INTO `translation` (`id_project`, `code`, `language`, `translation`) VALUES(?, ?, ?, ?)'
-                        . 'ON DUPLICATE KEY UPDATE `translation` = ?');
-                
-                $sth->bindParam(1, $idProject,  PDO::PARAM_INT);
-                $sth->bindParam(2, $code,       PDO::PARAM_STR);
-                $sth->bindParam(3, $language,   PDO::PARAM_STR);
-                $sth->bindParam(4, $value,      PDO::PARAM_STR);
-                $sth->bindParam(5, $value,      PDO::PARAM_STR);
 
-                if($sth->execute() === false):
+            if (isset($arr[$language])):
+                $value = !empty($arr[$language]) ? $arr[$language] : '';
+
+        $sth = $this->dbh->prepare('INSERT INTO `translation` (`id_project`, `code`, `language`, `translation`) VALUES(?, ?, ?, ?)'
+                        .'ON DUPLICATE KEY UPDATE `translation` = ?');
+
+        $sth->bindParam(1, $idProject,  PDO::PARAM_INT);
+        $sth->bindParam(2, $code,       PDO::PARAM_STR);
+        $sth->bindParam(3, $language,   PDO::PARAM_STR);
+        $sth->bindParam(4, $value,      PDO::PARAM_STR);
+        $sth->bindParam(5, $value,      PDO::PARAM_STR);
+
+        if ($sth->execute() === false):
                     return false;
-                endif;
-            endif;
+        endif;
+        endif;
         endforeach;
 
         return true;
     }
-    
+
     /**
-     * @param integer $idProject
+     * @param int    $idProject
      * @param string $code
-     * 
-     * @return boolean
+     *
+     * @return bool
      */
     public function deleteCode($idProject, $code)
     {
         $sth = $this->dbh->prepare('DELETE FROM `translation` WHERE `code` = ? and `id_project` = ?');
 
-        $sth->bindParam(1, $code,       PDO::PARAM_STR);
-        $sth->bindParam(2, $idProject,  PDO::PARAM_INT);
- 
+        $sth->bindParam(1, $code, PDO::PARAM_STR);
+        $sth->bindParam(2, $idProject, PDO::PARAM_INT);
+
         return $sth->execute();
     }
-    
-    
-    public function getLanguagesFromProject($idProject){
 
+    public function getLanguagesFromProject($idProject)
+    {
         $returnValue = array();
 
         $data = $this->getProjectById($idProject);
-        
-        if(!empty($data['languages'])):
-            $returnValue = explode(",", $data['languages']);
-        endif;        
+
+        if (!empty($data['languages'])):
+            $returnValue = explode(',', $data['languages']);
+        endif;
 
         return $returnValue;
     }
 }
 
+
 // Source: classes/general/Response.php
 
 
 /**
- * Class creates two types of response according having error
+ * Class creates two types of response according having error.
+ *
  * @author Serkin Alexander <serkin.alexander@gmail.com>
  */
-class Response {
-
-    public static function responseWithError($message){
-
+class Response
+{
+    public static function responseWithError($message)
+    {
         header('Content-Type: application/json');
 
         $response = array(
             'status' => array(
                 'state'     => 'notOk',
-                'message'   => $message
+                'message'   => $message,
                 ),
-            'data'  => array()
+            'data'  => array(),
                 );
 
         echo json_encode($response);
         die();
-
     }
 
-    public static function responseWithSuccess($arr, $statusMessage = ''){
-
+    public static function responseWithSuccess($arr, $statusMessage = '')
+    {
         header('Content-Type: application/json');
 
         $response = array(
             'status' => array(
                 'state'     => 'Ok',
-                'message'   => $statusMessage
+                'message'   => $statusMessage,
                 ),
-            'data'  => $arr
+            'data'  => $arr,
                 );
 
         echo json_encode($response);
-        die();
     }
 }
+
 
 // Source: i18n/en.php
 
@@ -1471,63 +1760,60 @@ $app['i18n']['en'] = array(
     )
 );
 
+
 // Source: controllers/code/delete.php
 
 
-$app['controllers']['code/delete'] = function ($app, $request){
+$app['controllers']['code/delete'] = function($app, $request) {
 
-    $idProject  = !empty($request['id_project'])    ? (int)$request['id_project']   : null;
+    $idProject  = !empty($request['id_project'])    ? (int) $request['id_project']   : null;
     $code       = !empty($request['code'])          ? $request['code']              : null;
 
-
-    if(empty($idProject)):
+    if (empty($idProject)):
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_id_project'];
-    elseif(empty($code)):
+    elseif (empty($code)):
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_code'];
     else:
-        $result = $app['foler']->deleteCode($idProject, $code);
+        $result     = $app['foler']->deleteCode($idProject, $code);
         $error      = $app['foler']->getError();
         $errorMsg   = $error[2];
     endif;
 
-
-    if($result):
+    if ($result):
         Response::responseWithSuccess(array(), $app['i18n']['foler']['code_removed']);
     else:
         Response::responseWithError($errorMsg);
     endif;
-    
+
 };
+
 
 // Source: controllers/code/search.php
 
 
 
-
-$app['controllers']['code/search'] = function ($app, $request){
+$app['controllers']['code/search'] = function ($app, $request) {
 
     $keyword    = !empty($request['keyword'])       ? $request['keyword']           : null;
-    $idProject  = !empty($request['id_project'])    ? (int)$request['id_project']   : null;
+    $idProject  = !empty($request['id_project'])    ? (int) $request['id_project']   : null;
 
     $codes = $app['foler']->getAllCodes($idProject, $keyword);
     Response::responseWithSuccess(array('codes' => $codes));
 
 };
 
+
 // Source: controllers/project/delete.php
 
 
 
+$app['controllers']['project/delete'] = function($app, $request) {
 
-$app['controllers']['project/delete'] = function ($app, $request){
+    $idProject = !empty($request['id_project']) ? (int)$request['id_project'] : null;
 
-
-    $idProject = !empty($request['id_project']) ? (int)$request['id_project'] : null;    
-
-
-    if(empty($idProject)):
+    if (empty($idProject)):
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_id_project'];
     else:
@@ -1536,8 +1822,7 @@ $app['controllers']['project/delete'] = function ($app, $request){
         $errorMsg   = $error[2];
     endif;
 
-
-    if($result):
+    if ($result):
         Response::responseWithSuccess(array(), $app['i18n']['foler']['project_removed']);
     else:
         Response::responseWithError($errorMsg);
@@ -1545,31 +1830,40 @@ $app['controllers']['project/delete'] = function ($app, $request){
 
 };
 
+
 // Source: controllers/project/export.php
 
 
+$joinStringToArr = function ($string, $value, &$arr = []) {
 
-$app['controllers']['project/export'] = function ($app, $request){
+    $keys = explode('.', $string);
 
+    $ref = &$arr;
+
+    while ($key = array_shift($keys)) {
+        $ref = &$ref[$key];
+    }
+
+    $ref = $value;
+
+};
+
+$app['controllers']['project/export'] = function($app, $request) use ($joinStringToArr) {
 
     $idProject  = !empty($request['id_project']) ? (int)$request['id_project'] : null;
-    $type       = (!empty($request['type']) && in_array($request['type'], array('php','yaml'))) ? $request['type'] : 'php';
+    $type       = (!empty($request['type']) && in_array($request['type'], array('php', 'yaml'))) ? $request['type'] : 'php';
 
-    
     $project    = $app['foler']->getProjectById($idProject);
     $languages  = $app['foler']->getLanguagesFromProject($idProject);
-    
-    
-    
+
     $result = true;
     $directory = $project['path'];
-    
 
-    if(empty($project['path']) or !  is_writable($directory)):
+    if (empty($project['path']) || !is_writable($directory)) {
         $result     = false;
-        $errorMsg   = $app['i18n']['errors']['project_path_not_writable'].': ' . $directory;
-    else:
-        
+        $errorMsg   = $app['i18n']['errors']['project_path_not_writable'] . ': ' . $directory;
+    } else {
+
         switch ($type) {
             case 'php':
                 $export = new PHPExport();
@@ -1582,33 +1876,28 @@ $app['controllers']['project/export'] = function ($app, $request){
             default:
                 break;
         }
-        
+
         $records = $app['foler']->getAllTranslationsFromProject($idProject);
 
-        
         foreach ($languages as $language):
             $out = array();
-            
-        
+
             foreach ($records as $record):
-                if($record['language'] == $language):
-                    joinStringToArr($record['code'], $record['translation'], $out);
+                if ($record['language'] == $language):
+                    $joinStringToArr($record['code'], $record['translation'], $out);
                 endif;
             endforeach;
-            
-            if($export->export($out, $directory, $language) === false):
+
+            if ($export->export($out, $directory, $language) === false):
                 $result     = false;
-                $errorMsg   = $app['i18n']['errors']['cannot_export_project']. ': ' . $language;
+                $errorMsg   = $app['i18n']['errors']['cannot_export_project'] . ': ' . $language;
             endif;
-        
+
         endforeach;
-        
-        
-    endif;
 
+}
 
-
-    if($result === true):
+    if ($result === true):
         Response::responseWithSuccess(array(), $app['i18n']['foler']['project_exported']);
     else:
         Response::responseWithError($errorMsg);
@@ -1620,23 +1909,23 @@ $app['controllers']['project/export'] = function ($app, $request){
 // Source: controllers/project/getall.php
 
 
-$app['controllers']['project/getall'] = function ($app, $request){
-    
+$app['controllers']['project/getall'] = function ($app, $request) {
+
     $projects = $app['foler']->getAllProjects();
     Response::responseWithSuccess(array('projects' => $projects));
-    
+
 };
+
 
 // Source: controllers/project/getone.php
 
 
 
+$app['controllers']['project/getone'] = function ($app, $request) {
 
-$app['controllers']['project/getone'] = function ($app, $request){
-    
-    $idProject = !empty($request['id_project']) ? (int)$request['id_project'] : null;
+    $idProject = !empty($request['id_project']) ? (int) $request['id_project'] : null;
 
-    if(!is_null($idProject)):
+    if (!is_null($idProject)):
         $project = $app['foler']->getProjectByID($idProject);
         Response::responseWithSuccess(array('project' => $project));
     else:
@@ -1645,44 +1934,44 @@ $app['controllers']['project/getone'] = function ($app, $request){
 
 };
 
+
 // Source: controllers/project/save.php
 
 
-$isLanguagesValid =  function($languages) {
-    
+$isLanguagesValid =  function ($languages) {
+
     $returnValue = true;
 
-    if(strpos($languages, ' ') !== false):
+    if (strpos($languages, ' ') !== false):
         $returnValue = false;
     endif;
-    
+
     $uniqueArr = array();
-    
+
     foreach (explode(',', $languages) as $value):
-        if(empty($value) or strlen($value) != 2 or isset($uniqueArr[$value])):
+        if (empty($value) || strlen($value) != 2 or isset($uniqueArr[$value])):
             $returnValue = false;
         endif;
         $uniqueArr[$value] = 1;
     endforeach;
-    
+
     return $returnValue;
 
 };
 
-$app['controllers']['project/save'] = function ($app, $request) use ($isLanguagesValid){
+$app['controllers']['project/save'] = function ($app, $request) use ($isLanguagesValid) {
 
     parse_str($request['form'], $form);
 
     $idProject = !empty($form['id_project']) ? $form['id_project'] : null;
 
-    
-    if(empty($form['languages']) or $isLanguagesValid($form['languages']) === false):
+    if (empty($form['languages']) || $isLanguagesValid($form['languages']) === false):
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['not_valid_project_languages'];
-    elseif(empty($form['path'])):
+    elseif (empty($form['path'])):
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_project_export_path'];
-    elseif(empty($form['name'])):
+    elseif (empty($form['name'])):
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_project_name'];
     else:
@@ -1691,52 +1980,51 @@ $app['controllers']['project/save'] = function ($app, $request) use ($isLanguage
         $errorMsg   = $error[2];
     endif;
 
-    if($result):
+    if ($result):
         Response::responseWithSuccess(array('id_project' => $result), $app['i18n']['foler']['project_saved']);
     else:
         Response::responseWithError($errorMsg);
     endif;
-    
+
 };
+
 
 // Source: controllers/transaltion/getone.php
 
 
 
+$app['controllers']['translation/getone'] = function ($app, $request) {
 
-$app['controllers']['translation/getone'] = function ($app, $request){
-    
     $code       = !empty($request['code'])          ? $request['code']              : null;
-    $idProject  = !empty($request['id_project'])    ? (int)$request['id_project']   : null;
-
+    $idProject  = !empty($request['id_project'])    ? (int) $request['id_project']   : null;
 
     $result = $app['foler']->getTranslation($idProject, $code);
     Response::responseWithSuccess($result);
 
 };
 
+
 // Source: controllers/transaltion/save.php
 
 
-$isCodeValid = function($code) {
+$isCodeValid = function ($code) {
 
     return preg_match('/^[a-z0-9_\.]+$/', $code) === 1 ? true : false;
-    
+
 };
 
-$app['controllers']['translation/save'] = function ($app, $request) use($isCodeValid) {
+$app['controllers']['translation/save'] = function ($app, $request) use ($isCodeValid) {
 
     parse_str(urldecode($request['form']), $form);
-
 
     $idProject  = !empty($form['id_project'])   ? $form['id_project']   : null;
     $code       = !empty($form['code'])         ? $form['code']         : null;
     $arr        = !empty($form['translation'])  ? $form['translation']  : array();
 
-    if(empty($idProject)):
+    if (empty($idProject)):
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_id_project'];
-    elseif(empty($code) or $isCodeValid($code) === false):
+    elseif (empty($code) || $isCodeValid($code) === false):
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['not_valid_project_code'];
     else:
@@ -1745,13 +2033,14 @@ $app['controllers']['translation/save'] = function ($app, $request) use($isCodeV
         $errorMsg   = $error[2];
     endif;
 
-    if($result):
+    if ($result):
         Response::responseWithSuccess(array(), $app['i18n']['foler']['translation_saved']);
     else:
         Response::responseWithError($errorMsg);
     endif;
 
 };
+
 
 // Source: config/footer.php
 
@@ -1770,6 +2059,7 @@ $i18n = $app['i18n'] = $app['i18n'][$app['locale']];
 
 if(!empty($_REQUEST['action']) && isset($app['controllers'][$_REQUEST['action']])):
     $app['controllers'][$_REQUEST['action']]($app, $_REQUEST);
+    die();
 endif;
 
 ?>
@@ -1787,7 +2077,7 @@ endif;
             table {
                 border: #cecece 1px solid;
             }
-            
+
             .selected_project {
                 background-color: #cecece;
             }
@@ -1854,13 +2144,13 @@ endif;
                                     <td><button class="btn btn-danger btn-xs" OnClick="projects.deleteProject({{id_project}})"><?php echo $i18n['layout']['delete']; ?></button></td>
                                 </tr>
                             {{/projects}}
-                                    
+
                             {{^projects}}
                                 <tr>
                                     <td colspan="4">{{i18n.no_projects}}</td>
                                 </tr>
                             {{/projects}}
-                            
+
                         </tbody>
                     </table>
                 </script>
@@ -1873,7 +2163,7 @@ endif;
                         {{#id_project}}
                             <input type="hidden" name="id_project" value="{{id_project}}">
                         {{/id_project}}
-            
+
                     <div class="form-group">
                         <label class="col-sm-6 control-label"><?php echo $i18n['layout']['name']; ?></label>
                         <div class="col-sm-6">
@@ -1955,7 +2245,7 @@ endif;
                 </script>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-md-12">
                 <hr>
@@ -2015,7 +2305,7 @@ var codes = {
         el.addClass('success');
         translation.render(code);
     },
-    
+
     CodeForm: {
         save:   function(code) {
             sendRequest('code/save', {code:code, id_project: idSelectedProject});
@@ -2031,8 +2321,8 @@ var codes = {
             $('#codeFormBlock').html('');
         }
     },
-    
-    
+
+
     SearchField: {
 
         find:   function(keyword) {
@@ -2050,9 +2340,10 @@ var codes = {
         hide: function() {
             $('#searchKeyword').hide();
         }
-        
+
     }
 };
+
 var locale = 'en';
 var i18n = {
     en: {
@@ -2064,7 +2355,8 @@ var i18n = {
 i18n = i18n[locale];
 
 
- 
+
+
 var idSelectedProject;
 var projects = {
     deleteProject: function(idProject) {
@@ -2107,8 +2399,8 @@ var projects = {
         });
         ev.stopPropagation();
     },
-    
-    
+
+
     ProjectForm: {
         save: function(){
             var data = $('#projectForm').serialize();
@@ -2151,6 +2443,7 @@ var projects = {
     }
 };
 
+
 var statusField = {
     el: $('#status_field'),
     setFail: function(message) {
@@ -2159,29 +2452,30 @@ var statusField = {
             statusField.clear();
         }, 5000);
     },
-    
+
     setOk: function(message) {
         this.el.html('<p class="bg-success">'+message+'</p>');
         setTimeout(function() {
             statusField.clear();
         }, 5000);
     },
-    
+
     clear: function() {
         this.el.html('');
     },
-    
+
     render: function(status) {
 
         if(status.state === 'Ok') {
             this.setOk(status.message);
         }
-        
+
         if(status.state === 'notOk') {
             this.setFail(status.message);
         }
     }
 };
+
 
 
 var translation = {
@@ -2201,7 +2495,7 @@ var translation = {
         var data = (code !== "undefined") ? {code: code, id_project:idSelectedProject} : {id_project:idSelectedProject};
 
         sendRequest('translation/getone', data, function(response){
-            
+
             response.data.id_project = idSelectedProject;
 
             var template = $('#translationFormTemplate').html();
@@ -2212,6 +2506,7 @@ var translation = {
 
     }
 };
+
 </script>
         <!-- /end -->
 

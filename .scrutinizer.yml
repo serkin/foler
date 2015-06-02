@@ -1,7 +1,7 @@
 filter:
     paths: [classes/*, controllers/*]
     excluded_paths:
-        - classes/export/Spyc.php        
+        - classes/export/Spyc.php
 
 checks:
     php:

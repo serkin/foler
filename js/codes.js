@@ -17,7 +17,7 @@ var codes = {
         el.addClass('success');
         translation.render(code);
     },
-    
+
     CodeForm: {
         save:   function(code) {
             sendRequest('code/save', {code:code, id_project: idSelectedProject});
@@ -33,8 +33,8 @@ var codes = {
             $('#codeFormBlock').html('');
         }
     },
-    
-    
+
+
     SearchField: {
 
         find:   function(keyword) {
@@ -52,6 +52,6 @@ var codes = {
         hide: function() {
             $('#searchKeyword').hide();
         }
-        
+
     }
 };
