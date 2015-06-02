@@ -8,7 +8,7 @@ class Foler
     /**
      * @var PDO
      */
-    protected $dbh  = null;
+    protected $dbh = null;
 
     /**
      * @var string
@@ -186,22 +186,24 @@ class Foler
      */
     public function saveProject($name, $path, $languages, $idProject = null)
     {
-        if (is_null($idProject)):
-            $sth = $this->dbh->prepare('INSERT INTO `project` (`name`, `path`, `languages`) VALUES(?, ?, ?)'); else:
+        if (is_null($idProject)) {
+            $sth = $this->dbh->prepare('INSERT INTO `project` (`name`, `path`, `languages`) VALUES(?, ?, ?)');
+        } else {
             $sth = $this->dbh->prepare('UPDATE `project` SET `name` = ?, `path` = ?, `languages` = ? WHERE `id_project` = ?');
-        endif;
+        }
 
-        $sth->bindParam(1, $name,        PDO::PARAM_STR);
-        $sth->bindParam(2, $path,        PDO::PARAM_STR);
-        $sth->bindParam(3, $languages,   PDO::PARAM_STR);
+        $sth->bindParam(1, $name, PDO::PARAM_STR);
+        $sth->bindParam(2, $path, PDO::PARAM_STR);
+        $sth->bindParam(3, $languages, PDO::PARAM_STR);
 
-        if (is_null($idProject)):
+        if (is_null($idProject)) {
             $sth->execute();
-        $returnValue = $this->dbh->lastInsertId() ? $this->dbh->lastInsertId() : 0; else:
+            $returnValue = $this->dbh->lastInsertId() ? $this->dbh->lastInsertId() : 0;
+        } else {
             $sth->bindParam(4, $idProject, PDO::PARAM_INT);
-        $sth->execute();
-        $returnValue = $idProject;
-        endif;
+            $sth->execute();
+            $returnValue = $idProject;
+        }
 
         return $returnValue;
     }
@@ -216,8 +218,8 @@ class Foler
     public function deleteProject($idProject)
     {
         $sth = $this->dbh->prepare('DELETE FROM `project` WHERE `id_project` = ?');
-        
-        $sth->bindParam(1, $idProject,  PDO::PARAM_INT);
+
+        $sth->bindParam(1, $idProject, PDO::PARAM_INT);
 
         return $sth->execute();
     }
@@ -266,8 +268,8 @@ class Foler
     {
         $sth = $this->dbh->prepare('DELETE FROM `translation` WHERE `code` = ? and `id_project` = ?');
 
-        $sth->bindParam(1, $code,       PDO::PARAM_STR);
-        $sth->bindParam(2, $idProject,  PDO::PARAM_INT);
+        $sth->bindParam(1, $code, PDO::PARAM_STR);
+        $sth->bindParam(2, $idProject, PDO::PARAM_INT);
 
         return $sth->execute();
     }

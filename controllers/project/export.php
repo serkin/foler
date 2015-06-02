@@ -1,7 +1,20 @@
 <?php
 
+$joinStringToArr = function ($string, $value, &$arr = []) {
 
-$app['controllers']['project/export'] = function ($app, $request) {
+    $keys = explode('.', $string);
+
+    $ref = &$arr;
+
+    while ($key = array_shift($keys)) {
+        $ref = &$ref[$key];
+    }
+
+    $ref = $value;
+
+};
+
+$app['controllers']['project/export'] = function($app, $request) use ($joinStringToArr) {
 
     $idProject  = !empty($request['id_project']) ? (int)$request['id_project'] : null;
     $type       = (!empty($request['type']) && in_array($request['type'], array('php', 'yaml'))) ? $request['type'] : 'php';
@@ -12,10 +25,10 @@ $app['controllers']['project/export'] = function ($app, $request) {
     $result = true;
     $directory = $project['path'];
 
-    if (empty($project['path']) or !is_writable($directory)):
+    if (empty($project['path']) || !is_writable($directory)) {
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['project_path_not_writable'] . ': ' . $directory;
-    else:
+    } else {
 
         switch ($type) {
             case 'php':
@@ -37,7 +50,7 @@ $app['controllers']['project/export'] = function ($app, $request) {
 
             foreach ($records as $record):
                 if ($record['language'] == $language):
-                    joinStringToArr($record['code'], $record['translation'], $out);
+                    $joinStringToArr($record['code'], $record['translation'], $out);
                 endif;
             endforeach;
 
@@ -48,7 +61,7 @@ $app['controllers']['project/export'] = function ($app, $request) {
 
         endforeach;
 
-    endif;
+}
 
     if ($result === true):
         Response::responseWithSuccess(array(), $app['i18n']['foler']['project_exported']);

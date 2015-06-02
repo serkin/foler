@@ -11,7 +11,7 @@ $isLanguagesValid =  function ($languages) {
     $uniqueArr = array();
 
     foreach (explode(',', $languages) as $value):
-        if (empty($value) or strlen($value) != 2 or isset($uniqueArr[$value])):
+        if (empty($value) || strlen($value) != 2 or isset($uniqueArr[$value])):
             $returnValue = false;
         endif;
         $uniqueArr[$value] = 1;
@@ -27,7 +27,7 @@ $app['controllers']['project/save'] = function ($app, $request) use ($isLanguage
 
     $idProject = !empty($form['id_project']) ? $form['id_project'] : null;
 
-    if (empty($form['languages']) or $isLanguagesValid($form['languages']) === false):
+    if (empty($form['languages']) || $isLanguagesValid($form['languages']) === false):
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['not_valid_project_languages'];
     elseif (empty($form['path'])):

@@ -17,7 +17,7 @@ $app['controllers']['translation/save'] = function ($app, $request) use ($isCode
     if (empty($idProject)):
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['empty_id_project'];
-    elseif (empty($code) or $isCodeValid($code) === false):
+    elseif (empty($code) || $isCodeValid($code) === false):
         $result     = false;
         $errorMsg   = $app['i18n']['errors']['not_valid_project_code'];
     else:
