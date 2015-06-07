@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
+
          backupGlobals="false"
          backupStaticAttributes="false"
          colors="true"
@@ -11,6 +12,7 @@
          stopOnFailure="false">
     <php>
         <var name="db_dsn" value="mysql:dbname=test_foler;host=localhost"/>
+        <var name="db_name" value="test_foler"/>
         <var name="db_user" value="root"/>
         <var name="db_password" value=""/>
     </php>
@@ -22,7 +24,6 @@
     <filter>
         <whitelist>
             <directory suffix=".php">classes/</directory>
-            <directory suffix=".php">controllers/</directory>
             <exclude>
               <file>classes/export/Spyc.php</file>
             </exclude>
