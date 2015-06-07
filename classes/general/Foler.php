@@ -8,27 +8,27 @@ class Foler
     /**
      * @var PDO
      */
-    protected $dbh = null;
+    private $dbh = null;
 
     /**
      * @var string
      */
-    protected $dbDSN;
+    private $dbDSN;
 
     /**
      * @var string
      */
-    protected $dbUser;
+    private $dbUser;
 
     /**
      * @var string
      */
-    protected $dbPassword;
+    private $dbPassword;
 
     /**
      * @var string
      */
-    protected $error;
+    private $error;
 
     /**
      * @param string $dbDSN
@@ -84,10 +84,11 @@ class Foler
     {
         $sth = $this->dbh->prepare('SELECT DISTINCT (`code`) FROM `translation` WHERE `id_project` = ? and `code` like ?');
 
-        $keyword = !is_null($keyword) ? "%$keyword%" : '';
+        $keyword = !is_null($keyword) ? "%$keyword%" : '%%';
 
         $sth->bindParam(1, $idProject, PDO::PARAM_INT);
         $sth->bindParam(2, $keyword, PDO::PARAM_STR);
+
         $sth->execute();
 
         return $sth->fetchAll(PDO::FETCH_ASSOC);
@@ -111,10 +112,10 @@ class Foler
         $returnValue['code'] = $code;
 
         foreach ($languages as $lang):
-            $returnValue['translations'][] = array(
+            $returnValue['translations'][] = [
                 'language'      => $lang,
                 'translation'   => !empty($dbRecords[$lang]) ? $dbRecords[$lang] : '',
-            );
+            ];
         endforeach;
 
         return $returnValue;
@@ -162,15 +163,6 @@ class Foler
         return $sth->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getProjectIdByCodeId($idCode)
-    {
-        $sth = $this->dbh->prepare('SELECT `id_project` FROM `code` WHERE `id_code` = ?');
-        $sth->bindParam(1, $idCode, PDO::PARAM_INT);
-        $sth->execute();
-        $arr = $sth->fetch(PDO::FETCH_ASSOC);
-
-        return $arr['id_project'];
-    }
 
     /**
      * Saves project.
