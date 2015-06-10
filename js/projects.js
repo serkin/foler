@@ -25,6 +25,7 @@ var projects = {
 
     selectProjectById: function(idProject) {
 
+        $('#idGlobalProject').val(idProject);
         $('.project_block').removeClass('success');
         $('#project_block_' + idProject).addClass('success');
         idSelectedProject = parseInt(idProject);
