@@ -41,6 +41,7 @@
 
     </head>
     <body onLoad="projects.reload()">
+        <input type="hidden" id="idGlobalProject" value="">
 
         <div class="row">
             <div class="col-md-8">
@@ -76,7 +77,12 @@
                                         &nbsp;
                                         <button class="btn btn-info btn-xs" OnClick="projects.export({{id_project}},'yaml', event)">yaml</button>
                                     </td>
-                                    <td><button class="btn btn-danger btn-xs" OnClick="projects.deleteProject({{id_project}})"><?php echo $i18n['layout']['delete']; ?></button></td>
+                                    <td>
+                                        <button
+                                            class="btn btn-danger btn-xs"
+                                            id="projectButtonDelete_{{id_project}}"
+                                            OnClick="projects.deleteProject({{id_project}})"><?php echo $i18n['layout']['delete']; ?></button>
+                                    </td>
                                 </tr>
                             {{/projects}}
 
@@ -102,22 +108,22 @@
                     <div class="form-group">
                         <label class="col-sm-6 control-label"><?php echo $i18n['layout']['name']; ?></label>
                         <div class="col-sm-6">
-                            <input class="form-control input-sm" type="text" name="name" value="{{name}}">
+                            <input class="form-control input-sm" type="text" name="name" id="projectInputName" value="{{name}}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-6 control-label"><?php echo $i18n['layout']['languages']; ?></label>
                         <div class="col-sm-6">
-                            <input class="form-control" type="text" name="languages" value="{{languages}}" placeholder="en,ru,de">
+                            <input class="form-control" type="text" name="languages" value="{{languages}}" id="projectInputLanguages" placeholder="en,ru,de">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-6 control-label"><?php echo $i18n['layout']['path']; ?></label>
                         <div class="col-sm-6">
-                            <input class="form-control" type="text" name="path" value="{{path}}" placeholder="./">
+                            <input class="form-control" type="text" name="path" value="{{path}}" id="projectInputPath" placeholder="./">
                         </div>
                     </div>
-                    <button type="button" onclick="projects.ProjectForm.save()" class="btn btn-success"><?php echo $i18n['layout']['save']; ?></button>
+                    <button type="button" id="projectButtonSave" onclick="projects.ProjectForm.save()" class="btn btn-success"><?php echo $i18n['layout']['save']; ?></button>
                     <button type="reset" onclick="projects.ProjectForm.render()" class="btn btn-default"><?php echo $i18n['layout']['clear']; ?></button>
                 </form>
                 </script>
@@ -135,9 +141,9 @@
                         </thead>
                         <tbody>
                             {{#codes}}
-                                <tr OnClick="codes.selectCode('{{code}}', $(this))" class="code_block">
+                                <tr OnClick="codes.selectCode('{{code}}', $(this))" class="code_block" id="codeButtonSelect_{{code}}">
                                     <td>{{code}}</td>
-                                    <td><button class="btn btn-danger btn-xs" OnClick="codes.deleteCode('{{code}}', $('#searchKeyword').val())"><?php echo $i18n['layout']['delete']; ?></button></td>
+                                    <td><button class="btn btn-danger btn-xs" id="codeButtonDelete_{{code}}" OnClick="codes.deleteCode('{{code}}', $('#searchKeyword').val())"><?php echo $i18n['layout']['delete']; ?></button></td>
                                 </tr>
                             {{/codes}}
                         </tbody>
@@ -160,7 +166,7 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label"><?php echo $i18n['layout']['code']; ?>:</label>
                                 <div class="col-sm-6">
-                                    <input class="form-control" type="text" name="code" id="code" value="{{code}}" required>
+                                    <input class="form-control" type="text" name="code" id="codeInputCode" value="{{code}}" required>
                                 </div>
                             </div>
 
@@ -168,12 +174,12 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">{{language}}:</label>
                                     <div class="col-sm-6">
-                                        <textarea class="form-control"  name="translation[{{language}}]">{{translation}}</textarea>
+                                        <textarea class="form-control" id="codeInputLanguage{{language}}" name="translation[{{language}}]">{{translation}}</textarea>
                                     </div>
                                 </div>
                             {{/translations}}
 
-                            <button type="button" onclick="translation.save($('#code').val())" class="btn btn-success"><?php echo $i18n['layout']['save']; ?></button>
+                            <button type="button" id="codeButtonSave" onclick="translation.save($('#code').val())" class="btn btn-success"><?php echo $i18n['layout']['save']; ?></button>
 
                         </form>
                     {{/id_project}}
