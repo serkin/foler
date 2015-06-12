@@ -17,8 +17,11 @@
         <var name="db_password" value=""/>
     </php>
     <testsuites>
-        <testsuite name="foler">
-            <directory suffix=".php">tests/unit/</directory>
+        <testsuite name="unit">
+            <directory suffix=".php">tests/unit</directory>
+        </testsuite>
+        <testsuite name="func">
+            <directory suffix=".php">tests/functional</directory>
         </testsuite>
     </testsuites>
     <filter>
