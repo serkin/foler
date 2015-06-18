@@ -23,12 +23,13 @@ class Foler
     /**
      * @var string
      */
-    private $dbPassword;
+    private $error;
 
     /**
      * @var string
      */
-    private $error;
+    private $dbPassword;
+
 
     /**
      * @param string $dbDSN
@@ -42,6 +43,28 @@ class Foler
         $this->dbPassword   = $dbPassword;
     }
 
+    public function hasError()
+    {
+        return !empty($this->error);
+    }
+
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    public function clearError()
+    {
+        $this->error = null;
+    }
+
+    /**
+     * @param string $error
+     */
+    public function setError($error) {
+        $this->error = $error;
+    }
+
     /**
      * Connects to database.
      *
@@ -52,11 +75,7 @@ class Foler
         $dbh = new PDO($this->dbDSN, $this->dbUser, $this->dbPassword);
         $this->dbh = $dbh;
         $this->dbh->exec('SET NAMES utf8');
-    }
 
-    public function getError()
-    {
-        return $this->dbh->errorInfo();
     }
 
     /**
@@ -178,6 +197,9 @@ class Foler
      */
     public function saveProject($name, $path, $languages, $idProject = null)
     {
+
+        $this->clearError();
+
         if (is_null($idProject)) {
             $sth = $this->dbh->prepare('INSERT INTO `project` (`name`, `path`, `languages`) VALUES(?, ?, ?)');
         } else {
@@ -195,6 +217,11 @@ class Foler
             $sth->bindParam(4, $idProject, PDO::PARAM_INT);
             $sth->execute();
             $returnValue = $idProject;
+        }
+
+
+        if(!empty($sth->errorInfo()[2])) {
+            $this->setError($sth->errorInfo()[2]);
         }
 
         return $returnValue;
