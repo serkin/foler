@@ -1412,12 +1412,13 @@ class Foler
     /**
      * @var string
      */
-    private $dbPassword;
+    private $error;
 
     /**
      * @var string
      */
-    private $error;
+    private $dbPassword;
+
 
     /**
      * @param string $dbDSN
@@ -1431,6 +1432,28 @@ class Foler
         $this->dbPassword   = $dbPassword;
     }
 
+    public function hasError()
+    {
+        return !empty($this->error);
+    }
+
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    public function clearError()
+    {
+        $this->error = null;
+    }
+
+    /**
+     * @param string $error
+     */
+    public function setError($error) {
+        $this->error = $error;
+    }
+
     /**
      * Connects to database.
      *
@@ -1441,11 +1464,7 @@ class Foler
         $dbh = new PDO($this->dbDSN, $this->dbUser, $this->dbPassword);
         $this->dbh = $dbh;
         $this->dbh->exec('SET NAMES utf8');
-    }
 
-    public function getError()
-    {
-        return $this->dbh->errorInfo();
     }
 
     /**
@@ -1567,6 +1586,9 @@ class Foler
      */
     public function saveProject($name, $path, $languages, $idProject = null)
     {
+
+        $this->clearError();
+
         if (is_null($idProject)) {
             $sth = $this->dbh->prepare('INSERT INTO `project` (`name`, `path`, `languages`) VALUES(?, ?, ?)');
         } else {
@@ -1584,6 +1606,11 @@ class Foler
             $sth->bindParam(4, $idProject, PDO::PARAM_INT);
             $sth->execute();
             $returnValue = $idProject;
+        }
+
+
+        if(!empty($sth->errorInfo()[2])) {
+            $this->setError($sth->errorInfo()[2]);
         }
 
         return $returnValue;
@@ -1770,8 +1797,7 @@ $app['controllers']['code/delete'] = function($app, $request) {
         $errorMsg   = $app['i18n']['errors']['empty_code'];
     } else {
         $result     = $app['foler']->deleteCode($idProject, $code);
-        $error      = $app['foler']->getError();
-        $errorMsg   = $error[2];
+        $errorMsg   = $app['foler']->getError();
     }
 
     if ($result) {
@@ -1811,8 +1837,7 @@ $app['controllers']['project/delete'] = function($app, $request) {
         $errorMsg   = $app['i18n']['errors']['empty_id_project'];
     } else {
         $result     = $app['foler']->deleteProject($idProject);
-        $error      = $app['foler']->getError();
-        $errorMsg   = $error[2];
+        $errorMsg   = $app['foler']->getError();
     }
 
     if ($result) {
@@ -1965,8 +1990,7 @@ $app['controllers']['project/save'] = function ($app, $request) use ($isLanguage
         $errorMsg   = $app['i18n']['errors']['empty_project_name'];
     } else {
         $result     = $app['foler']->saveProject($form['name'], $form['path'], $form['languages'], $idProject);
-        $error      = $app['foler']->getError();
-        $errorMsg   = $error[2];
+        $errorMsg   = $app['foler']->getError();
     }
 
     if ($result) {
@@ -2016,8 +2040,7 @@ $app['controllers']['translation/save'] = function ($app, $request) use ($isCode
         $errorMsg   = $app['i18n']['errors']['not_valid_project_code'];
     else:
         $result     = $app['foler']->saveTranslation($idProject, $code, $arr);
-        $error      = $app['foler']->getError();
-        $errorMsg   = $error[2];
+        $errorMsg   = $app['foler']->getError();
     endif;
 
     if ($result):
