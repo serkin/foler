@@ -22,8 +22,7 @@ $app['controllers']['translation/save'] = function ($app, $request) use ($isCode
         $errorMsg   = $app['i18n']['errors']['not_valid_project_code'];
     else:
         $result     = $app['foler']->saveTranslation($idProject, $code, $arr);
-        $error      = $app['foler']->getError();
-        $errorMsg   = $error[2];
+        $errorMsg   = $app['foler']->getError();
     endif;
 
     if ($result):

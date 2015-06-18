@@ -38,8 +38,7 @@ $app['controllers']['project/save'] = function ($app, $request) use ($isLanguage
         $errorMsg   = $app['i18n']['errors']['empty_project_name'];
     } else {
         $result     = $app['foler']->saveProject($form['name'], $form['path'], $form['languages'], $idProject);
-        $error      = $app['foler']->getError();
-        $errorMsg   = $error[2];
+        $errorMsg   = $app['foler']->getError();
     }
 
     if ($result) {

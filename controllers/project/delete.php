@@ -10,8 +10,7 @@ $app['controllers']['project/delete'] = function($app, $request) {
         $errorMsg   = $app['i18n']['errors']['empty_id_project'];
     } else {
         $result     = $app['foler']->deleteProject($idProject);
-        $error      = $app['foler']->getError();
-        $errorMsg   = $error[2];
+        $errorMsg   = $app['foler']->getError();
     }
 
     if ($result) {
